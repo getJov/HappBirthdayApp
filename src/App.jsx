@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { createBlowDetector } from './lib/audio.js';
 import {
   LIMITS,
   buildShareUrl,
@@ -20,7 +21,7 @@ export default function App() {
   }, []);
 
   if (sharedGreeting) {
-    return <PreviewGreeting greeting={sharedGreeting} onCreateNew={() => window.location.assign('./')} />;
+    return <CelebrantExperience greeting={sharedGreeting} onCreateNew={() => window.location.assign('./')} />;
   }
 
   return <Creator />;
@@ -265,25 +266,150 @@ function Field({ label, help, children }) {
   );
 }
 
-function PreviewGreeting({ greeting, onCreateNew }) {
+function CelebrantExperience({ greeting, onCreateNew }) {
+  const [giftOpen, setGiftOpen] = useState(false);
+  const [candleBlown, setCandleBlown] = useState(false);
+  const [countdown, setCountdown] = useState(null);
+  const [micState, setMicState] = useState('idle');
+  const [micLevel, setMicLevel] = useState(0);
+  const detectorRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      detectorRef.current?.stop();
+    };
+  }, []);
+
+  const blowCandle = () => {
+    detectorRef.current?.stop();
+    detectorRef.current = null;
+    setMicState('complete');
+    setMicLevel(0);
+    setCountdown(null);
+    setCandleBlown(true);
+  };
+
+  const openGift = () => {
+    if (giftOpen) return;
+    setGiftOpen(true);
+    startMicCountdown(blowCandle, detectorRef, setCountdown, setMicState, setMicLevel);
+  };
+
   return (
-    <main className="celebrant-page is-preview">
-      <section className="preview-message">
-        <p className="eyebrow">Birthday link loaded</p>
-        <h1>Happy {ordinalAge(greeting.age)} Birthday, {greeting.name}!</h1>
-        <p>from: {greeting.from}</p>
-        {greeting.birthdate && <p className="birthdate-preview">Birthdate: {greeting.birthdate}</p>}
-        {greeting.notes.length > 0 && (
-          <div className="preview-notes">
-            {greeting.notes.map((note, index) => (
-              <p key={`${note}-${index}`}>{note}</p>
-            ))}
-          </div>
+    <main className={`celebrant-page ${giftOpen ? 'gift-is-open' : ''} ${candleBlown ? 'candle-is-out' : ''}`}>
+      <button type="button" className="quiet-link" onClick={onCreateNew}>
+        Create another
+      </button>
+
+      <div className="floating-prompt prompt-left">Make a wish!</div>
+      <div className="floating-prompt prompt-right">Blow the candle</div>
+
+      <section className="birthday-stage" aria-label={`Birthday greeting for ${greeting.name}`}>
+        {!giftOpen && (
+          <button type="button" className="gift-box" onClick={openGift} aria-label="Open birthday gift">
+            <span className="gift-lid" />
+            <span className="gift-ribbon vertical" />
+            <span className="gift-ribbon horizontal" />
+            <span className="gift-base" />
+          </button>
         )}
-        <button type="button" className="primary-button" onClick={onCreateNew}>
-          Create another
-        </button>
+
+        <div className="cake-scene" aria-hidden={!giftOpen}>
+          <div className="cake-message">
+            <span>Happy {ordinalAge(greeting.age)} Birthday, {greeting.name}!</span>
+            <small>from: {greeting.from}</small>
+          </div>
+          <div className="candle">
+            <span className="wick" />
+            {!candleBlown && <span className="flame" />}
+          </div>
+          <div className="cake">
+            <div className="frosting" />
+            <div className="cake-body">
+              <span>Happy {ordinalAge(greeting.age)} Birthday, {greeting.name}!</span>
+              <small>from: {greeting.from}</small>
+            </div>
+            <div className="cake-plate" />
+          </div>
+        </div>
       </section>
+
+      {giftOpen && (
+        <section className="interaction-dock" aria-label="Candle controls">
+          <div className="mic-status">
+            <span>{statusText(micState, countdown, candleBlown)}</span>
+            <div className="meter" aria-label="Microphone sensitivity meter">
+              <span style={{ width: `${Math.round(micLevel * 100)}%` }} />
+            </div>
+          </div>
+          <button type="button" className="primary-button" onClick={blowCandle} disabled={candleBlown}>
+            Tap to Blow
+          </button>
+        </section>
+      )}
+
+      {candleBlown && (
+        <section className="wish-note-panel" aria-label="Birthday wish notes">
+          {greeting.birthdate && <span className="birthdate-tag">{formatBirthdate(greeting.birthdate)}</span>}
+          <h2>Wish notes</h2>
+          {greeting.notes.length ? (
+            <div className="wish-note-list">
+              {greeting.notes.map((note, index) => (
+                <p key={`${note}-${index}`}>{note}</p>
+              ))}
+            </div>
+          ) : (
+            <p className="muted">No extra notes were added, just a bright birthday wish.</p>
+          )}
+        </section>
+      )}
     </main>
   );
+}
+
+function startMicCountdown(blowCandle, detectorRef, setCountdown, setMicState, setMicLevel) {
+  setMicState('countdown');
+  setCountdown(3);
+  let next = 3;
+
+  const timer = window.setInterval(async () => {
+    next -= 1;
+    setCountdown(next);
+
+    if (next > 0) return;
+
+    window.clearInterval(timer);
+    setCountdown(null);
+    setMicState('listening');
+
+    try {
+      detectorRef.current = await createBlowDetector({
+        onLevel: setMicLevel,
+        onBlow: blowCandle,
+      });
+    } catch {
+      setMicState('unavailable');
+      setMicLevel(0);
+    }
+  }, 900);
+}
+
+function statusText(micState, countdown, candleBlown) {
+  if (candleBlown) return 'Candle blown out';
+  if (micState === 'countdown') return `Listening starts in ${countdown}`;
+  if (micState === 'listening') return 'Listening for a blow';
+  if (micState === 'unavailable') return 'Mic unavailable. Use Tap to Blow.';
+  if (micState === 'complete') return 'Wish made';
+  return 'Open the gift to start';
+}
+
+function formatBirthdate(value) {
+  if (!value) return '';
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(date);
 }
