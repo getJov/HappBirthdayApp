@@ -108,7 +108,7 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 
 ## Tasks
 
-**Execution note:** T1-T8 are completed project history. The next implementation pass for Rev 3 must execute only T9, then run the full Done checklist items affected by Rev 3.
+**Execution note:** T1-T9 are completed project history. The next implementation pass for Rev 4 must execute only T10, then run the full Done checklist items affected by Rev 4.
 
 ### T1: Repository metadata readiness
 **Status:** Completed in current repository history.  
@@ -159,9 +159,15 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 **Verify:** `npm run build`; Manual: notes appear as floating letters after celebration, each opens/readably closes or dismisses, note placeholder encourages sender names, and the builder page no longer feels plain or overly dark.
 
 ### T9: Birthday scene UI refinement
+**Status:** Completed in current repository history.  
 **Do:** Refine the current birthday scene and creator copy without changing the share-data contract. Align the `open it` cue so it clearly points to the gift, add gift glow, lighten the pre-blow scene, redesign the cake as modern/all-ages/friendly, attach the candle to the cake top, increase cake/message prominence and inscription contrast after blow-out, make notes visibly float around the screen, add more hats/decorations, and simplify creator-page copy to only user-facing guidance.  
 **Files:** `src/App.jsx`, `src/styles.css`  
 **Verify:** `npm run build`; Manual: open a generated link on desktop/mobile, confirm the gift cue points to the gift, the gift glows, the pre-blow scene is not overly dark, the candle is attached to the cake, the cake and post-blow message are visually dominant/readable, notes float around the screen, extra hats/decorations appear without blocking the cake, and creator copy contains no technical/internal explanations.
+
+### T10: Note interaction and cake inscription correction
+**Do:** Fix floating note click/tap behavior so every visible note reliably opens its letter. Redesign the cake again to better match a modern all-ages birthday cake, keeping the candle attached and the cake visually prominent. Remove the white/background panel behind the birthday inscription; the message should look embedded on the cake surface itself while staying readable through color, shadow, stroke, placement, or icing-style treatment.  
+**Files:** `src/App.jsx`, `src/styles.css`  
+**Verify:** `npm run build`; Manual: after blowing out the candle, click/tap each visible note and confirm it opens; confirm the redesigned cake is visually stronger than the previous version; confirm the birthday message has no white panel/card behind it and remains readable as part of the cake design.
 
 ## Done
 - [ ] `git status --short` works before app implementation commits.
@@ -189,10 +195,12 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - [ ] Manual: candle flame disappears, celebration animation starts, notes display, and audio loops after interaction.
 - [ ] Manual: room/background shifts from dim candle-lit surprise mode to brighter all-ages celebration mode after blow-out.
 - [ ] Manual: wish notes appear as floating letters and open like actual letters on click/tap.
+- [ ] Manual: every visible floating note is clickable/tappable and opens its letter reliably.
 - [ ] Manual: wish notes visibly float around the celebration screen rather than staying in a static panel area.
 - [ ] Manual: additional hats/decorations appear but do not block the cake or message.
 - [ ] Manual: wish note placeholders include `- from sender`.
 - [ ] Manual: creator page visible copy uses plain user-facing guidance and omits technical/internal explanations about frontend-only, URL hash, localStorage, backend/database, and implementation details.
+- [ ] Manual: cake message has no white panel/card behind it and reads as embedded icing/decor on the cake surface.
 - [ ] Manual: mute/unmute control works.
 - [ ] Manual: reduced-motion preference reduces or disables nonessential celebration motion.
 - [ ] Manual: Vercel settings are compatible: build command `npm run build`, output directory `dist`, no backend functions required.
@@ -214,3 +222,8 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 **Change:** Added a focused UI refinement pass for gift cue alignment, gift glow, lighter pre-blow scene, modern all-ages cake redesign, attached candle, stronger cake/message visibility, more visibly floating notes, additional hats/decorations, and cleaner user-facing creator copy.  
 **Reason:** User feedback after Rev 2 found the gift cue misaligned, the scene too dark, the candle visually floating, the cake/message insufficiently prominent, notes not floating enough, and creator copy too technical.  
 **Updated Done criteria:** Added verification for cue alignment, gift glow, lighter pre-blow scene, attached candle, modern prominent cake, readable post-blow inscription, visibly floating notes, nonblocking decorations, and creator copy without technical/internal implementation language. Rev 3 execution is limited to T9 because T1-T8 are already completed in repository history.
+
+### Rev 4 - 2026-05-29
+**Change:** Added a focused correction for note clickability, another cake redesign pass, and removal of the white/background panel behind the cake birthday message.  
+**Reason:** User feedback after Rev 3 found floating notes not opening, the cake still not visually satisfactory, and the birthday message background panel undesirable.  
+**Updated Done criteria:** Added verification that every visible note opens, the cake redesign improves the visual focus, and the cake message appears embedded directly on the cake without a white panel/card. Rev 4 execution is limited to T10 because T1-T9 are already completed in repository history.

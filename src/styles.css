@@ -493,39 +493,46 @@ p {
 
 .cake {
   position: relative;
-  width: min(560px, 88vw);
+  width: min(580px, 88vw);
   display: grid;
   justify-items: center;
   transform: translateY(24px);
-  filter: drop-shadow(0 28px 54px rgba(29, 13, 38, 0.3));
+  filter:
+    drop-shadow(0 28px 54px rgba(29, 13, 38, 0.3))
+    drop-shadow(0 0 30px rgba(255, 209, 102, 0.22));
 }
 
 .frosting {
   position: relative;
   z-index: 2;
-  width: 86%;
-  height: 62px;
-  border-radius: 34px 34px 18px 18px;
+  width: 74%;
+  height: 78px;
+  margin-bottom: -18px;
+  border-radius: 999px 999px 34px 34px;
   background:
-    radial-gradient(circle at 18% 16%, #ffffff 0 8px, transparent 9px),
-    radial-gradient(circle at 78% 18%, #ffffff 0 7px, transparent 8px),
-    linear-gradient(180deg, #fff9ec, #ffd6e8);
-  box-shadow: 0 14px 28px rgba(255, 214, 232, 0.28);
+    radial-gradient(circle at 18% 18%, #ffffff 0 10px, transparent 11px),
+    radial-gradient(circle at 78% 22%, #ffffff 0 9px, transparent 10px),
+    linear-gradient(180deg, #fffdf7, #ffe1ef 72%, #ffb5cb);
+  box-shadow:
+    0 14px 28px rgba(255, 214, 232, 0.28),
+    inset 0 -12px rgba(239, 71, 111, 0.08);
 }
 
 .cake-body {
   width: 100%;
-  min-height: 190px;
+  min-height: 220px;
   display: grid;
   place-items: center;
   gap: 8px;
-  padding: 34px 34px 30px;
-  border: 5px solid rgba(255, 255, 255, 0.62);
-  border-radius: 32px 32px 18px 18px;
-  color: #351407;
+  padding: 44px 36px 34px;
+  border: 5px solid rgba(255, 255, 255, 0.68);
+  border-radius: 42px 42px 22px 22px;
+  color: #3f1508;
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.28) 0 3px, transparent 3px 54px),
-    linear-gradient(180deg, #ffb5cb 0%, #ff8fab 46%, #ffd166 46%, #ffc247 100%);
+    radial-gradient(circle at 12% 28%, rgba(255, 255, 255, 0.48) 0 10px, transparent 11px),
+    radial-gradient(circle at 88% 33%, rgba(255, 255, 255, 0.4) 0 9px, transparent 10px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.22) 0 3px, transparent 3px 62px),
+    linear-gradient(180deg, #ff9fbc 0%, #ff7da5 43%, #ffd166 43%, #ffbd4a 100%);
   box-shadow:
     inset 0 -18px rgba(88, 24, 46, 0.12),
     0 26px 70px rgba(0, 0, 0, 0.24),
@@ -538,13 +545,19 @@ p {
   font-size: clamp(2rem, 6.4vw, 4.1rem);
   font-weight: 700;
   line-height: 1;
-  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.68);
+  color: #fffaf2;
+  -webkit-text-stroke: 1px rgba(85, 28, 11, 0.42);
+  text-shadow:
+    0 2px 0 rgba(85, 28, 11, 0.6),
+    0 0 14px rgba(255, 209, 102, 0.44);
 }
 
 .cake-body small {
   font-family: "Brush Script MT", "Segoe Script", cursive;
   font-size: clamp(1.15rem, 3vw, 1.9rem);
   font-weight: 700;
+  color: #5a210e;
+  text-shadow: 0 1px 0 rgba(255, 250, 242, 0.65);
 }
 
 .cake-decorations {
@@ -602,17 +615,13 @@ p {
   opacity: 0;
   scale: 0.92;
   width: min(420px, 100%);
-  border-radius: 22px;
-  padding: 16px;
-  background: rgba(255, 250, 242, 0);
+  padding: 6px;
   transition: opacity 460ms ease, scale 460ms ease;
 }
 
 .candle-is-out .cake-inscription {
   opacity: 1;
   scale: 1;
-  background: rgba(255, 250, 242, 0.7);
-  box-shadow: inset 0 0 0 2px rgba(255, 209, 102, 0.34);
 }
 
 .cake-plate {
@@ -670,7 +679,7 @@ p {
   position: fixed;
   left: 50%;
   bottom: clamp(16px, 4vw, 32px);
-  z-index: 7;
+  z-index: 12;
   width: min(680px, calc(100% - 32px));
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
@@ -791,7 +800,7 @@ p {
 .floating-letters {
   position: fixed;
   inset: 0;
-  z-index: 4;
+  z-index: 10;
   pointer-events: none;
 }
 
@@ -822,7 +831,7 @@ p {
   border-radius: 8px;
   color: #5b2c13;
   background: #fff8e6;
-  box-shadow: 0 18px 38px rgba(116, 66, 15, 0.18);
+  box-shadow: 0 18px 38px rgba(116, 66, 15, 0.24);
   transform: rotate(var(--letter-rotate));
   animation: letterFloat 3.4s ease-in-out infinite;
   animation-delay: calc(var(--letter-index) * -420ms);
