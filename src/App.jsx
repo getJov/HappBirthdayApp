@@ -125,12 +125,9 @@ function Creator() {
   return (
     <main className="creator-page">
       <section className="creator-hero" aria-labelledby="creator-title">
-        <p className="eyebrow">Frontend-only birthday link</p>
+        <p className="eyebrow">Birthday surprise maker</p>
         <h1 id="creator-title">Create a birthday surprise</h1>
-        <p>
-          Add the greeting details, keep notes short, and share one independent link for each
-          friend. Old links keep working because their data lives inside the URL.
-        </p>
+        <p>Personalize the cake, add a few wishes, then send the birthday link.</p>
       </section>
 
       <section className="builder-grid" aria-label="Birthday greeting builder">
@@ -230,19 +227,16 @@ function Creator() {
           </div>
 
           <h2>Share link</h2>
-          <p className="muted">
-            Each generated link is independent. Data is encoded in the URL hash, and local browser
-            state is only used for this draft form.
-          </p>
+          <p className="muted">Copy the link when your birthday surprise is ready.</p>
 
           <div className="url-meter">
-            <span>URL length</span>
+            <span>Link size</span>
             <strong>{previewUrlLength.length}/{LIMITS.urlLength}</strong>
           </div>
 
           {shareUrl ? (
             <>
-              <textarea className="share-url" value={shareUrl} readOnly rows="5" />
+              <textarea className="share-url" value={shareUrl} readOnly rows="5" aria-label="Birthday share link" />
               <div className="action-row stacked">
                 <button type="button" className="primary-button" onClick={copyLink}>
                   {copyState === 'copied' ? 'Copied' : 'Copy link'}
@@ -257,8 +251,7 @@ function Creator() {
                 <p className="small-warning">Clipboard was blocked. Select and copy the link manually.</p>
               )}
               <p className="link-note">
-                You can create another greeting after copying this. This link will still open the same
-                birthday page later.
+                Ready for another friend? Use New greeting from the birthday page.
               </p>
             </>
           ) : (
@@ -295,6 +288,13 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   const [openNoteIndex, setOpenNoteIndex] = useState(null);
   const detectorRef = useRef(null);
   const audioRef = useRef(null);
+  const letterPositions = [
+    { left: '7%', top: '18%', rotate: '-9deg' },
+    { left: '76%', top: '16%', rotate: '8deg' },
+    { left: '8%', top: '63%', rotate: '7deg' },
+    { left: '76%', top: '61%', rotate: '-7deg' },
+    { left: '43%', top: '8%', rotate: '3deg' },
+  ];
 
   useEffect(() => {
     return () => {
@@ -336,6 +336,8 @@ function CelebrantExperience({ greeting, onCreateNew }) {
         <div className="party-decorations" aria-hidden="true">
           <span className="party-hat hat-one" />
           <span className="party-hat hat-two" />
+          <span className="party-hat hat-three" />
+          <span className="party-hat hat-four" />
           <span className="party-popper popper-one" />
           <span className="party-popper popper-two" />
         </div>
@@ -363,17 +365,17 @@ function CelebrantExperience({ greeting, onCreateNew }) {
         )}
 
         <div className="cake-scene" aria-hidden={!giftOpen}>
-          <div
-            className="candle"
-            style={{
-              '--blow-level': micLevel,
-              '--flame-scale': 1 + micLevel * 0.65,
-            }}
-          >
-            <span className="wick" />
-            {!candleBlown && <span className="flame" />}
-          </div>
           <div className="cake">
+            <div
+              className="candle"
+              style={{
+                '--blow-level': micLevel,
+                '--flame-scale': 1 + micLevel * 0.65,
+              }}
+            >
+              <span className="wick" />
+              {!candleBlown && <span className="flame" />}
+            </div>
             <div className="frosting" />
             <div className="cake-body">
               <div className="cake-decorations" aria-hidden="true">
@@ -429,9 +431,9 @@ function CelebrantExperience({ greeting, onCreateNew }) {
                   onClick={() => setOpenNoteIndex(index)}
                   style={{
                     '--letter-index': index,
-                    '--letter-left': `${8 + (index % LIMITS.noteCount) * 17}%`,
-                    '--letter-top': `${(index % 2) * 54}px`,
-                    '--letter-rotate': `${-8 + index * 5}deg`,
+                    '--letter-left': letterPositions[index % letterPositions.length].left,
+                    '--letter-top': letterPositions[index % letterPositions.length].top,
+                    '--letter-rotate': letterPositions[index % letterPositions.length].rotate,
                   }}
                 >
                   <span className="envelope-flap" />
