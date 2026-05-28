@@ -4,6 +4,7 @@ import { createBlowDetector } from './lib/audio.js';
 import {
   LIMITS,
   buildShareUrl,
+  clearDraft,
   defaultGreeting,
   loadDraft,
   ordinalAge,
@@ -14,6 +15,7 @@ import {
 
 export default function App() {
   const [sharedGreeting, setSharedGreeting] = useState(() => readGreetingFromHash());
+  const [creatorKey, setCreatorKey] = useState(0);
 
   useEffect(() => {
     const handleHashChange = () => setSharedGreeting(readGreetingFromHash());
@@ -22,10 +24,20 @@ export default function App() {
   }, []);
 
   if (sharedGreeting) {
-    return <CelebrantExperience greeting={sharedGreeting} onCreateNew={() => window.location.assign('./')} />;
+    return (
+      <CelebrantExperience
+        greeting={sharedGreeting}
+        onCreateNew={() => {
+          clearDraft();
+          window.history.pushState(null, '', window.location.pathname);
+          setSharedGreeting(null);
+          setCreatorKey((key) => key + 1);
+        }}
+      />
+    );
   }
 
-  return <Creator />;
+  return <Creator key={creatorKey} />;
 }
 
 function Creator() {
@@ -116,8 +128,8 @@ function Creator() {
         <p className="eyebrow">Frontend-only birthday link</p>
         <h1 id="creator-title">Create a birthday surprise</h1>
         <p>
-          Add the greeting details, keep notes short, and share one link. No backend, no account,
-          no database.
+          Add the greeting details, keep notes short, and share one independent link for each
+          friend. Old links keep working because their data lives inside the URL.
         </p>
       </section>
 
@@ -219,7 +231,8 @@ function Creator() {
 
           <h2>Share link</h2>
           <p className="muted">
-            Data is encoded in the URL hash. Local browser state is only used for this draft form.
+            Each generated link is independent. Data is encoded in the URL hash, and local browser
+            state is only used for this draft form.
           </p>
 
           <div className="url-meter">
@@ -243,6 +256,10 @@ function Creator() {
               {copyState === 'manual' && (
                 <p className="small-warning">Clipboard was blocked. Select and copy the link manually.</p>
               )}
+              <p className="link-note">
+                You can create another greeting after copying this. This link will still open the same
+                birthday page later.
+              </p>
             </>
           ) : (
             <div className="empty-share">

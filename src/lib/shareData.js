@@ -108,6 +108,14 @@ export function saveDraft(input) {
   }
 }
 
+export function clearDraft() {
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+  } catch {
+    // Draft storage is optional convenience only.
+  }
+}
+
 export function loadDraft() {
   try {
     const raw = localStorage.getItem(DRAFT_KEY);

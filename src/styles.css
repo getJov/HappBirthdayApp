@@ -125,7 +125,8 @@ p {
 .note-field small,
 .field small,
 .empty-share,
-.small-warning {
+.small-warning,
+.link-note {
   color: rgba(248, 245, 255, 0.72);
   line-height: 1.65;
 }
@@ -327,6 +328,11 @@ p {
 .share-url {
   min-height: 116px;
   font-size: 0.86rem;
+}
+
+.link-note {
+  margin-top: 12px;
+  font-size: 0.92rem;
 }
 
 .quiet-link {
