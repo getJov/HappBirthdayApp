@@ -190,7 +190,7 @@ function Creator() {
                   value={note}
                   maxLength={LIMITS.noteLength}
                   rows="3"
-                  placeholder="Wishing you a bright and beautiful year."
+                  placeholder={'Wishing you a bright and beautiful year.\n- from sender'}
                   onChange={(event) => updateNote(index, event.target.value)}
                 />
                 <small>{note.length}/{LIMITS.noteLength}</small>
@@ -292,6 +292,7 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   const [micLevel, setMicLevel] = useState(0);
   const [muted, setMuted] = useState(false);
   const [musicState, setMusicState] = useState('idle');
+  const [openNoteIndex, setOpenNoteIndex] = useState(null);
   const detectorRef = useRef(null);
   const audioRef = useRef(null);
 
@@ -416,22 +417,53 @@ function CelebrantExperience({ greeting, onCreateNew }) {
       )}
 
       {candleBlown && (
-        <section className="wish-note-panel" aria-label="Birthday wish notes">
+        <section className="floating-letters" aria-label="Birthday wish notes">
           {greeting.birthdate && <span className="birthdate-tag">{formatBirthdate(greeting.birthdate)}</span>}
-          <h2>Wish notes</h2>
           {greeting.notes.length ? (
-            <div className="wish-note-list">
+            <div className="letter-cloud">
               {greeting.notes.map((note, index) => (
-                <p key={`${note}-${index}`}>{note}</p>
+                <button
+                  type="button"
+                  className="letter-envelope"
+                  key={`${note}-${index}`}
+                  onClick={() => setOpenNoteIndex(index)}
+                  style={{
+                    '--letter-index': index,
+                    '--letter-left': `${8 + (index % LIMITS.noteCount) * 17}%`,
+                    '--letter-top': `${(index % 2) * 54}px`,
+                    '--letter-rotate': `${-8 + index * 5}deg`,
+                  }}
+                >
+                  <span className="envelope-flap" />
+                  <span className="envelope-body">Note {index + 1}</span>
+                </button>
               ))}
             </div>
           ) : (
-            <p className="muted">No extra notes were added, just a bright birthday wish.</p>
+            <p className="no-notes">No extra notes were added, just a bright birthday wish.</p>
           )}
           {musicState === 'blocked' && (
             <p className="small-warning">Music was blocked by the browser. Tap Unmute or Tap to Blow again.</p>
           )}
         </section>
+      )}
+
+      {openNoteIndex !== null && (
+        <div className="letter-backdrop" role="presentation" onClick={() => setOpenNoteIndex(null)}>
+          <article
+            className="open-letter"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Wish note ${openNoteIndex + 1}`}
+            onClick={(event) => event.stopPropagation()}
+          >
+            {greeting.birthdate && <span className="birthdate-tag">{formatBirthdate(greeting.birthdate)}</span>}
+            <p>{greeting.notes[openNoteIndex]}</p>
+            <button type="button" className="secondary-button" onClick={() => setOpenNoteIndex(null)}>
+              Close letter
+            </button>
+          </article>
+        </div>
       )}
     </main>
   );
