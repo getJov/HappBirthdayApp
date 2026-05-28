@@ -342,36 +342,54 @@ function CelebrantExperience({ greeting, onCreateNew }) {
       <audio ref={audioRef} src="/audio/happy-birthday.wav" loop preload="auto" />
 
       <button type="button" className="quiet-link" onClick={onCreateNew}>
-        Create another
+        New greeting
       </button>
-
-      <div className="floating-prompt prompt-left">Make a wish!</div>
-      <div className="floating-prompt prompt-right">Blow the candle</div>
 
       <section className="birthday-stage" aria-label={`Birthday greeting for ${greeting.name}`}>
         {!giftOpen && (
-          <button type="button" className="gift-box" onClick={openGift} aria-label="Open birthday gift">
-            <span className="gift-lid" />
-            <span className="gift-ribbon vertical" />
-            <span className="gift-ribbon horizontal" />
-            <span className="gift-base" />
-          </button>
+          <>
+            <div className="gift-cue" aria-hidden="true">
+              <span className="curly-arrow">↝</span>
+              <span>open it</span>
+            </div>
+            <button type="button" className="gift-box" onClick={openGift} aria-label="Open birthday gift">
+              <span className="gift-lid" />
+              <span className="gift-ribbon vertical" />
+              <span className="gift-ribbon horizontal" />
+              <span className="gift-base" />
+            </button>
+          </>
         )}
 
         <div className="cake-scene" aria-hidden={!giftOpen}>
-          <div className="cake-message">
-            <span>Happy {ordinalAge(greeting.age)} Birthday, {greeting.name}!</span>
-            <small>from: {greeting.from}</small>
-          </div>
-          <div className="candle">
+          <div
+            className="candle"
+            style={{
+              '--blow-level': micLevel,
+              '--flame-scale': 1 + micLevel * 0.65,
+            }}
+          >
             <span className="wick" />
             {!candleBlown && <span className="flame" />}
           </div>
           <div className="cake">
             <div className="frosting" />
             <div className="cake-body">
-              <span>Happy {ordinalAge(greeting.age)} Birthday, {greeting.name}!</span>
-              <small>from: {greeting.from}</small>
+              <div className="cake-decorations" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+                <i />
+                <i />
+              </div>
+              <div className="cake-inscription" aria-live="polite">
+                {candleBlown && (
+                  <>
+                    <span>Happy {ordinalAge(greeting.age)} Birthday, {greeting.name}!</span>
+                    <small>from: {greeting.from}</small>
+                  </>
+                )}
+              </div>
             </div>
             <div className="cake-plate" />
           </div>
@@ -463,8 +481,8 @@ function startMicCountdown(blowCandle, detectorRef, setCountdown, setMicState, s
 
 function statusText(micState, countdown, candleBlown) {
   if (candleBlown) return 'Candle blown out';
-  if (micState === 'countdown') return `Listening starts in ${countdown}`;
-  if (micState === 'listening') return 'Listening for a blow';
+  if (micState === 'countdown') return `Make a wish. Listening starts in ${countdown}`;
+  if (micState === 'listening') return 'Make a wish first, then blow the candle';
   if (micState === 'unavailable') return 'Mic unavailable. Use Tap to Blow.';
   if (micState === 'complete') return 'Wish made';
   return 'Open the gift to start';
