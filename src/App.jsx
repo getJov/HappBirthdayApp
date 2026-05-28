@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import ConfettiCanvas from './components/ConfettiCanvas.jsx';
 import { createBlowDetector } from './lib/audio.js';
 import {
   LIMITS,
@@ -272,7 +273,10 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   const [countdown, setCountdown] = useState(null);
   const [micState, setMicState] = useState('idle');
   const [micLevel, setMicLevel] = useState(0);
+  const [muted, setMuted] = useState(false);
+  const [musicState, setMusicState] = useState('idle');
   const detectorRef = useRef(null);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     return () => {
@@ -287,6 +291,18 @@ function CelebrantExperience({ greeting, onCreateNew }) {
     setMicLevel(0);
     setCountdown(null);
     setCandleBlown(true);
+    playBirthdayAudio(audioRef, muted, setMusicState);
+  };
+
+  const toggleMute = () => {
+    const nextMuted = !muted;
+    setMuted(nextMuted);
+    if (audioRef.current) {
+      audioRef.current.muted = nextMuted;
+      if (!nextMuted && candleBlown) {
+        playBirthdayAudio(audioRef, false, setMusicState);
+      }
+    }
   };
 
   const openGift = () => {
@@ -297,6 +313,17 @@ function CelebrantExperience({ greeting, onCreateNew }) {
 
   return (
     <main className={`celebrant-page ${giftOpen ? 'gift-is-open' : ''} ${candleBlown ? 'candle-is-out' : ''}`}>
+      <ConfettiCanvas active={candleBlown} />
+      {candleBlown && (
+        <div className="party-decorations" aria-hidden="true">
+          <span className="party-hat hat-one" />
+          <span className="party-hat hat-two" />
+          <span className="party-popper popper-one" />
+          <span className="party-popper popper-two" />
+        </div>
+      )}
+      <audio ref={audioRef} src="/audio/happy-birthday.wav" loop preload="auto" />
+
       <button type="button" className="quiet-link" onClick={onCreateNew}>
         Create another
       </button>
@@ -345,6 +372,11 @@ function CelebrantExperience({ greeting, onCreateNew }) {
           <button type="button" className="primary-button" onClick={blowCandle} disabled={candleBlown}>
             Tap to Blow
           </button>
+          {candleBlown && (
+            <button type="button" className="secondary-button" onClick={toggleMute}>
+              {muted ? 'Unmute' : 'Mute'}
+            </button>
+          )}
         </section>
       )}
 
@@ -361,10 +393,28 @@ function CelebrantExperience({ greeting, onCreateNew }) {
           ) : (
             <p className="muted">No extra notes were added, just a bright birthday wish.</p>
           )}
+          {musicState === 'blocked' && (
+            <p className="small-warning">Music was blocked by the browser. Tap Unmute or Tap to Blow again.</p>
+          )}
         </section>
       )}
     </main>
   );
+}
+
+async function playBirthdayAudio(audioRef, muted, setMusicState) {
+  const audio = audioRef.current;
+  if (!audio) return;
+
+  audio.loop = true;
+  audio.muted = muted;
+
+  try {
+    await audio.play();
+    setMusicState('playing');
+  } catch {
+    setMusicState('blocked');
+  }
 }
 
 function startMicCountdown(blowCandle, detectorRef, setCountdown, setMicState, setMicLevel) {
