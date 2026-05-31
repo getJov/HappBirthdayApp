@@ -59,6 +59,7 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - After the gift opens, emphasize the sequence: make a wish first, then blow the candle.
 - Make the candle glow/light reactive to microphone volume so users can see whether blowing is being detected before the threshold is reached.
 - Include a microphone sensitivity meter, countdown before listening, and fallback `Tap to Blow` button.
+- Fallback blow action must require fast repeated taps instead of a single click/tap. Show visible tap progress feedback and only blow out the candle when enough taps happen within a short time window. Keep microphone blow detection unchanged.
 - Show wish notes as floating letter/envelope elements after the celebration starts. Clicking/tapping a note opens it like an actual letter.
 - Make floating notes visibly float around the celebration screen rather than reading like a static panel.
 - Add more birthday hats/decorations while keeping motion lightweight and nonblocking.
@@ -76,6 +77,7 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - Redesign sticky notes so they read as friendly lightweight notes around the celebration scene, with responsive placement that avoids blocking the cake, controls, and message.
 - Keep the existing app functionality and data behavior unchanged during the redesign: URL hash format, validation limits, local draft behavior, create-new flow, mic behavior, tap fallback, audio behavior, mute behavior, and Vercel static compatibility must be preserved.
 - Add a colorful cartoon birthday party flag banner to the room background. It should read clearly as a birthday banner, with playful hand-drawn/doodle-style hanging flags inspired by the provided reference, not as a subtle geometric garland. The banner must sit behind the gift/cake/sticky notes/controls, feel integrated with the room, and remain lightweight/responsive.
+- Make the cartoon birthday flag banner hang on natural sagging curved strings near the top of the screen. Preserve the colorful hand-drawn flag style, but position `HAPPY` and `BIRTHDAY` along visible curved strings so they look physically hung rather than laid out in straight rows.
 - Fix the cake decoration placement so the candle, candle base/socket, and sprinkles visibly sit on the cake surfaces instead of floating outside the cake.
 
 **Must not:**
@@ -112,6 +114,7 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - Background banners can clutter the scene or compete with the cake. -> **Mitigation:** place banners in the background layer, keep opacity restrained, and verify they do not overlap primary UI on mobile.
 - Cake sprinkles and candle can drift visually when using absolute positioning and responsive scaling. -> **Mitigation:** anchor decoration elements inside the cake/top coordinate space and avoid large box-shadow offsets that extend beyond the cake.
 - Recreating the referenced banner too literally could introduce licensing/attribution problems. -> **Mitigation:** use the reference only as visual direction; create original CSS/markup shapes with similar colorful cartoon birthday flag-banner characteristics.
+- Curved banner placement can overlap top controls or crowd mobile screens. -> **Mitigation:** keep the banner behind the stage content, constrain it to the top room area, and add responsive offsets/sizing so it does not cover `New greeting`, the gift, cake, or controls.
 
 **Pushback:**
 - Do not overbuild this with routing, global state libraries, or backend-shaped abstractions. Future-us will hate a tiny greeting app pretending to be a platform.
@@ -121,10 +124,12 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - The current UI has accumulated too many disconnected visual ideas. Do not keep layering fixes on top of the existing look. Rev 6 should reset the visual language while preserving the product contract.
 - Rev 7 is a visual correction, not another redesign. Do not change the share-data contract, microphone/audio behavior, creator flow, note behavior, or app architecture to fix decoration placement.
 - Rev 8 is only a banner-style correction. Do not rework the cake, creator page, share flow, microphone/audio behavior, sticky notes, or URL contract while replacing the current subtle garland.
+- Rev 9 is only a banner placement/choreography correction. Preserve the current cartoon flag style and do not rework the cake, creator page, share flow, microphone/audio behavior, sticky notes, or URL contract.
+- Rev 10 changes fallback interaction behavior. Keep microphone detection unchanged and do not alter share-data, creator, note, audio, or Vercel behavior while adding repeated-tap fallback progress.
 
 ## Tasks
 
-**Execution note:** T1-T13 are completed project history. The next implementation pass for Rev 8 must execute only T14, then run the full Done checklist items affected by Rev 8.
+**Execution note:** T1-T15 are completed project history. The next implementation pass for Rev 10 must execute only T16, then run the full Done checklist items affected by Rev 10.
 
 ### T1: Repository metadata readiness
 **Status:** Completed in current repository history.  
@@ -205,9 +210,21 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 **Verify:** `npm run build`; Manual: open a generated link on desktop and mobile, confirm continuous banners appear in the room background behind the gift/cake/notes/controls, confirm the candle is visually planted into the cake top, confirm sprinkles stay on cake/frosting surfaces, and confirm all existing interactions still work.
 
 ### T14: Cartoon birthday flag banner correction
+**Status:** Completed in current repository history.
 **Do:** Replace the current subtle/geometric room garland with an original colorful cartoon birthday party flag banner inspired by the provided Vecteezy reference. The banner should use playful hand-drawn/doodle-style hanging flags and clearly read as a birthday banner. It may include birthday lettering if it remains readable and responsive, but must not use the referenced asset directly. Keep the banner behind the gift/cake/sticky notes/controls and preserve all existing functionality and share-data behavior.
 **Files:** `src/App.jsx`, `src/styles.css`
 **Verify:** `npm run build`; Manual: open a generated link on desktop and mobile, confirm the banner clearly reads as a colorful cartoon birthday party flag banner rather than a subtle garland, confirm it sits behind the gift/cake/notes/controls without blocking them, and confirm all existing interactions still work.
+
+### T15: Curved hanging birthday banner
+**Status:** Completed in current repository history.
+**Do:** Preserve the current colorful hand-drawn/cartoon birthday flag style, but make the `HAPPY` and `BIRTHDAY` flag rows hang along natural sagging curved strings near the top of the screen. The banner should look like it is physically hung from both ends, with flags following the curve through vertical offsets and slight rotations. Keep it behind the gift/cake/sticky notes/controls, responsive on mobile, and preserve all existing functionality/share-data behavior.
+**Files:** `src/App.jsx`, `src/styles.css`
+**Verify:** `npm run build`; Manual: open a generated link on desktop and mobile, confirm `HAPPY` and `BIRTHDAY` sit on curved hanging strings near the top of the room, confirm flags follow the sagging curve instead of straight rows, confirm the banner stays behind content without blocking `New greeting`, gift, cake, notes, or controls, and confirm all existing interactions still work.
+
+### T16: Repeated-tap fallback and final candle anchoring
+**Do:** Change the fallback `Tap to Blow` behavior so one click/tap is not enough. Require several fast repeated taps within a short time window to blow out the candle, and show visible progress feedback so users understand how close they are. Keep microphone blow detection unchanged. Also refine candle placement so the candle and base/socket are fully planted into the cake top and no longer appear even slightly floating. Preserve share-data, audio, sticky notes, creator flow, and Vercel behavior.
+**Files:** `src/App.jsx`, `src/styles.css`
+**Verify:** `npm run build`; Manual: open a generated link, reveal the cake, confirm one tap does not blow out the candle, confirm several fast taps fill visible progress and then blow out the candle, confirm mic blow detection still works unchanged, confirm the candle/base looks fully planted into the cake top, and confirm audio/notes/share/create-new behavior still works.
 
 ## Done
 - [ ] `git status --short` works before app implementation commits.
@@ -232,6 +249,8 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - [ ] Manual: microphone blow detection works on localhost when permission is granted.
 - [ ] Manual: candle glow reacts to mic volume before the blow threshold is reached.
 - [ ] Manual: `Tap to Blow` works when mic is denied, blocked, unsupported, or unreliable.
+- [ ] Manual: fallback blow requires fast repeated taps; a single tap/click does not blow out the candle.
+- [ ] Manual: fallback repeated taps show visible progress feedback and reset/decay if taps are too slow.
 - [ ] Manual: candle flame disappears, celebration animation starts, notes display, and audio loops after interaction.
 - [ ] Manual: room/background shifts from dim candle-lit surprise mode to brighter all-ages celebration mode after blow-out.
 - [ ] Manual: wish notes appear as floating letters and open like actual letters on click/tap.
@@ -258,6 +277,13 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - [ ] Manual: the room banner clearly reads as a colorful cartoon birthday party flag banner with playful hand-drawn/doodle-style flags, not as a subtle geometric garland.
 - [ ] Manual: the banner is original CSS/markup styling inspired by the reference and does not directly use the Vecteezy asset.
 - [ ] Manual: Rev 8 preserves existing URL hash data behavior, generated-link compatibility, local draft behavior, validation limits, create-new flow, mic fallback behavior, audio behavior, reduced-motion handling, and Vercel static build behavior.
+- [ ] Manual: `HAPPY` and `BIRTHDAY` banner rows hang on natural sagging curved strings near the top of the room.
+- [ ] Manual: banner flags follow the curve with vertical offsets and slight rotations rather than appearing in straight rows.
+- [ ] Manual: curved banner stays behind content and does not block `New greeting`, gift, cake, sticky notes, mic controls, or mute controls on desktop/mobile.
+- [ ] Manual: Rev 9 preserves existing URL hash data behavior, generated-link compatibility, local draft behavior, validation limits, create-new flow, mic fallback behavior, audio behavior, reduced-motion handling, and Vercel static build behavior.
+- [ ] Manual: microphone blow detection remains unchanged while repeated-tap fallback behavior is added.
+- [ ] Manual: candle and candle base/socket are fully planted into the cake top and no longer appear even slightly floating.
+- [ ] Manual: Rev 10 preserves existing URL hash data behavior, generated-link compatibility, local draft behavior, validation limits, create-new flow, notes behavior, audio behavior, reduced-motion handling, and Vercel static build behavior.
 - [ ] Manual: mute/unmute control works.
 - [ ] Manual: reduced-motion preference reduces or disables nonessential celebration motion.
 - [ ] Manual: Vercel settings are compatible: build command `npm run build`, output directory `dist`, no backend functions required.
@@ -304,3 +330,13 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 **Change:** Added a focused correction to replace the subtle/geometric garland with an original colorful cartoon birthday party flag banner inspired by the user-provided reference.
 **Reason:** User clarified that the intended decoration is a recognizable birthday flag banner in a colorful cartoon/doodle style, not a subtle repeating garland.
 **Updated Done criteria:** Added verification that the banner clearly reads as a birthday party flag banner, remains behind content, is responsive/nonblocking, does not directly use the referenced Vecteezy asset, and preserves all existing functionality/share-data behavior. Rev 8 execution is limited to T14 because T1-T13 are already completed in repository history.
+
+### Rev 9 - 2026-05-31
+**Change:** Added a focused correction to make the cartoon birthday flag banner hang along natural curved strings near the top of the room.
+**Reason:** User clarified that the banner should look physically hung with curved/sagging strings, while preserving the current colorful hand-drawn flag style.
+**Updated Done criteria:** Added verification that `HAPPY` and `BIRTHDAY` follow curved hanging strings, flags follow the sagging curve with offsets/rotations, the banner stays behind content, and all functionality/share-data behavior remains preserved. Rev 9 execution is limited to T15 because T1-T14 are already completed in repository history.
+
+### Rev 10 - 2026-05-31
+**Change:** Added repeated-tap fallback blow behavior with visible progress feedback and a final candle/base anchoring refinement.
+**Reason:** User wants `Tap to Blow` to feel more like an intentional blowing action instead of one click, and still sees the candle as slightly floating.
+**Updated Done criteria:** Added verification that one tap does not blow out the candle, several fast taps trigger blow-out with progress feedback, slow taps reset/decay, microphone blow detection remains unchanged, the candle/base is fully planted into the cake top, and share-data/audio/notes/creator/Vercel behavior remains preserved. Rev 10 execution is limited to T16 because T1-T15 are already completed in repository history.

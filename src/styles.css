@@ -948,11 +948,11 @@ p {
 
 .candle {
   position: absolute;
-  top: -44px;
+  top: -28px;
   left: 50%;
   z-index: 7;
   width: 26px;
-  height: 84px;
+  height: 78px;
   border-radius: 8px;
   background:
     repeating-linear-gradient(135deg, #fff8ed 0 10px, #8fd9ee 10px 18px);
@@ -963,15 +963,15 @@ p {
 .candle-base {
   position: absolute;
   left: 50%;
-  bottom: -13px;
-  width: 60px;
-  height: 24px;
+  bottom: -16px;
+  width: 66px;
+  height: 28px;
   border-radius: 50%;
   background: radial-gradient(ellipse at 50% 35%, #fffdf7 0 34%, #ffdfe7 62%, #f8a7b7 100%);
   box-shadow:
-    inset 0 -5px rgba(99, 55, 66, 0.14),
-    0 7px 14px rgba(60, 37, 62, 0.16),
-    0 0 0 5px rgba(255, 255, 255, 0.16);
+    inset 0 -7px rgba(99, 55, 66, 0.18),
+    0 8px 12px rgba(60, 37, 62, 0.12),
+    0 0 0 7px rgba(255, 255, 255, 0.2);
   transform: translateX(-50%);
 }
 
@@ -1055,6 +1055,33 @@ p {
   border-radius: inherit;
   background: linear-gradient(90deg, var(--sky), var(--butter), var(--coral));
   transition: width 80ms linear;
+}
+
+.tap-progress {
+  display: grid;
+  gap: 6px;
+  color: rgba(255, 248, 237, 0.76);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.candle-is-out .tap-progress {
+  color: rgba(79, 53, 29, 0.72);
+}
+
+.tap-meter {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tap-meter span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--coral), var(--butter));
+  transition: width 120ms ease;
 }
 
 .party-decorations {
@@ -1408,7 +1435,7 @@ p {
   }
 
   .candle {
-    top: -40px;
+    top: -24px;
   }
 
   .letter-envelope {

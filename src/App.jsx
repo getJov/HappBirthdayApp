@@ -13,6 +13,10 @@ import {
   validateGreeting,
 } from './lib/shareData.js';
 
+const TAP_BLOW_TARGET = 5;
+const TAP_BLOW_WINDOW_MS = 850;
+const TAP_PROGRESS_RESET_MS = 1100;
+
 export default function App() {
   const [sharedGreeting, setSharedGreeting] = useState(() => readGreetingFromHash());
   const [creatorKey, setCreatorKey] = useState(0);
@@ -291,8 +295,12 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   const [micLevel, setMicLevel] = useState(0);
   const [muted, setMuted] = useState(false);
   const [musicState, setMusicState] = useState('idle');
+  const [tapProgress, setTapProgress] = useState(0);
   const detectorRef = useRef(null);
   const audioRef = useRef(null);
+  const lastTapRef = useRef(0);
+  const tapCountRef = useRef(0);
+  const tapResetTimerRef = useRef(null);
   const letterPositions = [
     { left: '7%', top: '18%', rotate: '-9deg' },
     { left: '76%', top: '16%', rotate: '8deg' },
@@ -304,12 +312,17 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   useEffect(() => {
     return () => {
       detectorRef.current?.stop();
+      window.clearTimeout(tapResetTimerRef.current);
     };
   }, []);
 
   const blowCandle = () => {
     detectorRef.current?.stop();
     detectorRef.current = null;
+    window.clearTimeout(tapResetTimerRef.current);
+    lastTapRef.current = 0;
+    tapCountRef.current = 0;
+    setTapProgress(0);
     setMicState('complete');
     setMicLevel(0);
     setCountdown(null);
@@ -333,6 +346,32 @@ function CelebrantExperience({ greeting, onCreateNew }) {
     setGiftOpen(true);
     startMicCountdown(blowCandle, detectorRef, setCountdown, setMicState, setMicLevel);
   };
+
+  const handleTapFallback = () => {
+    if (candleBlown) return;
+
+    const now = Date.now();
+    const isFastTap = now - lastTapRef.current <= TAP_BLOW_WINDOW_MS;
+    const nextProgress = isFastTap ? tapCountRef.current + 1 : 1;
+    lastTapRef.current = now;
+    tapCountRef.current = nextProgress;
+
+    window.clearTimeout(tapResetTimerRef.current);
+
+    if (nextProgress >= TAP_BLOW_TARGET) {
+      blowCandle();
+      return;
+    }
+
+    setTapProgress(nextProgress);
+    tapResetTimerRef.current = window.setTimeout(() => {
+      lastTapRef.current = 0;
+      tapCountRef.current = 0;
+      setTapProgress(0);
+    }, TAP_PROGRESS_RESET_MS);
+  };
+
+  const tapProgressPercent = Math.round((tapProgress / TAP_BLOW_TARGET) * 100);
 
   return (
     <main className={`celebrant-page ${giftOpen ? 'gift-is-open' : ''} ${candleBlown ? 'candle-is-out' : ''}`}>
@@ -432,9 +471,17 @@ function CelebrantExperience({ greeting, onCreateNew }) {
             <div className="meter" aria-label="Microphone sensitivity meter">
               <span style={{ width: `${Math.round(micLevel * 100)}%` }} />
             </div>
+            {!candleBlown && (
+              <div className="tap-progress" aria-label="Fast tap fallback progress" aria-live="polite">
+                <span>Fast taps {tapProgress}/{TAP_BLOW_TARGET}</span>
+                <div className="tap-meter">
+                  <span style={{ width: `${tapProgressPercent}%` }} />
+                </div>
+              </div>
+            )}
           </div>
-          <button type="button" className="primary-button" onClick={blowCandle} disabled={candleBlown}>
-            Tap to Blow
+          <button type="button" className="primary-button" onClick={handleTapFallback} disabled={candleBlown}>
+            {tapProgress ? 'Keep tapping' : 'Tap fast to blow'}
           </button>
           {candleBlown && (
             <button type="button" className="secondary-button" onClick={toggleMute}>
