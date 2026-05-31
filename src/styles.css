@@ -407,7 +407,8 @@ p {
 
 .room-wall,
 .room-floor,
-.room-light {
+.room-light,
+.room-banner {
   position: absolute;
   display: block;
   inset-inline: 0;
@@ -441,6 +442,52 @@ p {
   filter: blur(2px);
 }
 
+.room-banner {
+  z-index: 1;
+  left: 50%;
+  width: min(1320px, 128vw);
+  height: 74px;
+  opacity: 0.72;
+  transform-origin: center;
+}
+
+.room-banner::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 10px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 248, 237, 0.5);
+  box-shadow: 0 0 12px rgba(255, 216, 117, 0.12);
+}
+
+.room-banner::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 12px;
+  height: 44px;
+  background:
+    conic-gradient(from 45deg at 50% 0, transparent 0 25%, #ffd875 0 50%, transparent 0) 0 0 / 88px 42px repeat-x,
+    conic-gradient(from 45deg at 50% 0, transparent 0 25%, #f7908e 0 50%, transparent 0) 29px 0 / 88px 42px repeat-x,
+    conic-gradient(from 45deg at 50% 0, transparent 0 25%, #8fd9ee 0 50%, transparent 0) 58px 0 / 88px 42px repeat-x;
+  filter: drop-shadow(0 8px 10px rgba(13, 8, 28, 0.14));
+}
+
+.banner-one {
+  top: clamp(72px, 13vh, 118px);
+  transform: translateX(-50%) rotate(-3deg);
+}
+
+.banner-two {
+  top: clamp(128px, 22vh, 186px);
+  opacity: 0.5;
+  transform: translateX(-50%) rotate(3deg);
+}
+
 .celebrant-page.candle-is-out {
   color: #352314;
   background: #fff2d8;
@@ -460,6 +507,14 @@ p {
 
 .candle-is-out .room-light {
   background: radial-gradient(circle, rgba(255, 244, 205, 0.98), rgba(255, 216, 117, 0.36) 46%, transparent 72%);
+}
+
+.candle-is-out .room-banner {
+  opacity: 0.82;
+}
+
+.candle-is-out .room-banner::before {
+  background: rgba(130, 82, 47, 0.24);
 }
 
 .confetti-canvas {
@@ -715,48 +770,55 @@ p {
 
 .cake-decorations {
   position: absolute;
-  inset: 24px 28px;
+  z-index: 3;
+  inset: 18px 34px 22px;
+  overflow: hidden;
+  border-radius: 20px 20px 24px 24px;
   pointer-events: none;
   opacity: 0.74;
 }
 
 .cake-decorations i {
   position: absolute;
-  width: 11px;
-  height: 28px;
+  width: 10px;
+  height: 24px;
   border-radius: 999px;
-  background: #fff8ed;
-  box-shadow:
-    50px 18px var(--sky),
-    112px -2px var(--butter),
-    196px 28px var(--mint),
-    284px 6px #ffffff,
-    356px 24px var(--coral);
-  transform: rotate(64deg);
+  background: var(--butter);
+  box-shadow: none;
+  transform: rotate(58deg);
 }
 
 .cake-decorations i:nth-child(2) {
-  top: 56%;
-  left: 20%;
+  top: 38%;
+  left: 18%;
+  background: var(--sky);
   transform: rotate(-42deg);
 }
 
 .cake-decorations i:nth-child(3) {
-  top: 18%;
+  top: 22%;
   left: 42%;
+  background: #fff8ed;
   transform: rotate(16deg);
 }
 
 .cake-decorations i:nth-child(4) {
-  top: 50%;
+  top: 46%;
   right: 24%;
+  background: var(--mint);
   transform: rotate(112deg);
 }
 
 .cake-decorations i:nth-child(5) {
-  top: 17%;
+  top: 20%;
   right: 15%;
+  background: var(--coral);
   transform: rotate(-8deg);
+}
+
+.cake-decorations i:nth-child(1) {
+  top: 28%;
+  left: 8%;
 }
 
 .cake-inscription {
@@ -811,7 +873,7 @@ p {
 
 .candle {
   position: absolute;
-  top: -62px;
+  top: -44px;
   left: 50%;
   z-index: 7;
   width: 26px;
@@ -826,14 +888,15 @@ p {
 .candle-base {
   position: absolute;
   left: 50%;
-  bottom: -11px;
-  width: 54px;
-  height: 20px;
+  bottom: -13px;
+  width: 60px;
+  height: 24px;
   border-radius: 50%;
   background: radial-gradient(ellipse at 50% 35%, #fffdf7 0 34%, #ffdfe7 62%, #f8a7b7 100%);
   box-shadow:
     inset 0 -5px rgba(99, 55, 66, 0.14),
-    0 7px 14px rgba(60, 37, 62, 0.16);
+    0 7px 14px rgba(60, 37, 62, 0.16),
+    0 0 0 5px rgba(255, 255, 255, 0.16);
   transform: translateX(-50%);
 }
 
@@ -1158,6 +1221,18 @@ p {
     top: 8%;
   }
 
+  .room-banner {
+    width: 152vw;
+  }
+
+  .banner-one {
+    top: 86px;
+  }
+
+  .banner-two {
+    top: 142px;
+  }
+
   .gift-box {
     width: min(330px, 76vw);
     height: min(260px, 58vw);
@@ -1243,7 +1318,7 @@ p {
   }
 
   .candle {
-    top: -58px;
+    top: -40px;
   }
 
   .letter-envelope {

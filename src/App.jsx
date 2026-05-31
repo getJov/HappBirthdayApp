@@ -337,8 +337,10 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   return (
     <main className={`celebrant-page ${giftOpen ? 'gift-is-open' : ''} ${candleBlown ? 'candle-is-out' : ''}`}>
       <div className="room-backdrop" aria-hidden="true">
-        <span className="room-light" />
         <span className="room-wall" />
+        <span className="room-banner banner-one" />
+        <span className="room-banner banner-two" />
+        <span className="room-light" />
         <span className="room-floor" />
       </div>
       <ConfettiCanvas active={candleBlown} />
