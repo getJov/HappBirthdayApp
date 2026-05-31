@@ -16,8 +16,7 @@ import {
 const TAP_BLOW_TARGET = 5;
 const TAP_BLOW_WINDOW_MS = 850;
 const TAP_PROGRESS_RESET_MS = 1100;
-const BALLOON_COUNT = 7;
-const MAX_VISIBLE_CANDLES = 40;
+const CARTOON_CANDLE_COUNT = 3;
 
 export default function App() {
   const [sharedGreeting, setSharedGreeting] = useState(() => readGreetingFromHash());
@@ -298,34 +297,17 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   const [muted, setMuted] = useState(false);
   const [musicState, setMusicState] = useState('idle');
   const [tapProgress, setTapProgress] = useState(0);
-  const [poppedBalloons, setPoppedBalloons] = useState([]);
-  const [notePositions, setNotePositions] = useState(() => {
-    const positions = [
-      { x: 8, y: 58 },
-      { x: 74, y: 56 },
-      { x: 12, y: 74 },
-      { x: 70, y: 76 },
-      { x: 42, y: 66 },
-    ];
-    return greeting.notes.map((_, index) => positions[index % positions.length]);
-  });
-  const [draggingNote, setDraggingNote] = useState(null);
   const detectorRef = useRef(null);
   const audioRef = useRef(null);
   const lastTapRef = useRef(0);
   const tapCountRef = useRef(0);
   const tapResetTimerRef = useRef(null);
-  const balloonTimersRef = useRef([]);
-  const ageNumber = Number.parseInt(greeting.age, 10) || 1;
-  const candleCount = Math.min(Math.max(ageNumber, 1), MAX_VISIBLE_CANDLES);
-  const candles = Array.from({ length: candleCount }, (_, index) => index);
-  const balloonIndexes = Array.from({ length: BALLOON_COUNT }, (_, index) => index);
+  const candles = Array.from({ length: CARTOON_CANDLE_COUNT }, (_, index) => index);
 
   useEffect(() => {
     return () => {
       detectorRef.current?.stop();
       window.clearTimeout(tapResetTimerRef.current);
-      balloonTimersRef.current.forEach((timer) => window.clearTimeout(timer));
     };
   }, []);
 
@@ -392,44 +374,10 @@ function CelebrantExperience({ greeting, onCreateNew }) {
     handleTapFallback();
   };
 
-  const popBalloon = (index) => {
-    setPoppedBalloons((current) => (current.includes(index) ? current : [...current, index]));
-    const timer = window.setTimeout(() => {
-      setPoppedBalloons((current) => current.filter((balloon) => balloon !== index));
-    }, 1800);
-    balloonTimersRef.current.push(timer);
-  };
-
-  const startNoteDrag = (event, index) => {
-    event.currentTarget.setPointerCapture(event.pointerId);
-    const rect = event.currentTarget.getBoundingClientRect();
-    setDraggingNote({
-      index,
-      offsetX: event.clientX - rect.left,
-      offsetY: event.clientY - rect.top,
-    });
-  };
-
-  const moveNote = (event) => {
-    if (!draggingNote) return;
-    const nextX = ((event.clientX - draggingNote.offsetX) / window.innerWidth) * 100;
-    const nextY = ((event.clientY - draggingNote.offsetY) / window.innerHeight) * 100;
-    setNotePositions((current) => current.map((position, index) => (
-      index === draggingNote.index
-        ? { x: Math.min(Math.max(nextX, 4), 82), y: Math.min(Math.max(nextY, 18), 84) }
-        : position
-    )));
-  };
-
-  const stopNoteDrag = () => setDraggingNote(null);
-
   return (
     <main
       className={`celebrant-page ${giftOpen ? 'gift-is-open' : ''} ${candleBlown ? 'candle-is-out' : ''}`}
       onPointerDown={handleSceneTap}
-      onPointerMove={moveNote}
-      onPointerUp={stopNoteDrag}
-      onPointerCancel={stopNoteDrag}
     >
       <ConfettiCanvas active={candleBlown} />
       <audio ref={audioRef} src="/audio/happy-birthday.wav" loop preload="auto" />
@@ -444,32 +392,10 @@ function CelebrantExperience({ greeting, onCreateNew }) {
               {muted ? 'U' : 'M'}
             </button>
           </div>
-          <div className="balloon-row" aria-label="Birthday balloons">
-            {balloonIndexes.map((index) => (
-              <button
-                className={`balloon balloon-${index + 1} ${poppedBalloons.includes(index) ? 'is-popped' : ''}`}
-                key={index}
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  popBalloon(index);
-                }}
-                aria-label="Pop balloon"
-              />
-            ))}
-          </div>
-          <div className="birthday-banner" aria-hidden="true">
-            {`happy ${ordinalAge(greeting.age)} birthday`.split('').map((letter, index) => (
-              <span className={letter === ' ' ? 'banner-space' : 'banner-flag'} key={`${letter}-${index}`}>
-                {letter}
-              </span>
-            ))}
-          </div>
-          <div className="floor-decor" aria-hidden="true">
-            <span className="mini-gift gift-a" />
-            <span className="mini-gift gift-b" />
-            <span className="floor-hat hat-a" />
-            <span className="floor-hat hat-b" />
+          <div className="celebration-balloons" aria-hidden="true">
+            <span />
+            <span />
+            <span />
           </div>
         </>
       )}
@@ -508,7 +434,6 @@ function CelebrantExperience({ greeting, onCreateNew }) {
                       key={candle}
                       style={{
                         '--candle-index': candle,
-                        '--candle-count': candleCount,
                         '--blow-level': micLevel,
                       }}
                     >
@@ -527,8 +452,9 @@ function CelebrantExperience({ greeting, onCreateNew }) {
             </div>
             {candleBlown && (
               <div className="cake-card" aria-live="polite">
-                <span>Happy {ordinalAge(greeting.age)} Birthday {greeting.name},</span>
-                <small>-{greeting.from}</small>
+                <span>Happy {ordinalAge(greeting.age)} Birthday</span>
+                <strong>{greeting.name}</strong>
+                <small>- {greeting.from}</small>
               </div>
             )}
           </div>
@@ -538,21 +464,16 @@ function CelebrantExperience({ greeting, onCreateNew }) {
       {candleBlown && (
         <section className="sticky-notes" aria-label="Birthday wish notes">
           {greeting.notes.length ? (
-            <>
+            <div className="sticky-note-grid">
               {greeting.notes.map((note, index) => (
                 <article
                   className={`sticky-note sticky-${index + 1}`}
                   key={`${note}-${index}`}
-                  style={{
-                    '--note-left': `${notePositions[index % notePositions.length]?.x ?? 10}%`,
-                    '--note-top': `${notePositions[index % notePositions.length]?.y ?? 64}%`,
-                  }}
-                  onPointerDown={(event) => startNoteDrag(event, index)}
                 >
                   <p>{note}</p>
                 </article>
               ))}
-            </>
+            </div>
           ) : (
             <p className="no-notes">No extra notes were added, just a bright birthday wish.</p>
           )}
@@ -606,24 +527,4 @@ function startMicCountdown(blowCandle, detectorRef, setCountdown, setMicState, s
       setMicLevel(0);
     }
   }, 900);
-}
-
-function statusText(micState, countdown, candleBlown) {
-  if (candleBlown) return 'Candle blown out';
-  if (micState === 'countdown') return `Make a wish. Listening starts in ${countdown}`;
-  if (micState === 'listening') return 'Make a wish first, then blow the candle';
-  if (micState === 'unavailable') return 'Mic unavailable. Use Tap to Blow.';
-  if (micState === 'complete') return 'Wish made';
-  return 'Open the gift to start';
-}
-
-function formatBirthdate(value) {
-  if (!value) return '';
-  const date = new Date(`${value}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(date);
 }

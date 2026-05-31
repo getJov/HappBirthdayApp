@@ -4,7 +4,7 @@
 Create a shareable birthday greeting experience without backend hosting complexity, accounts, or database storage. The app should let someone build a personalized birthday page and send it as a link.
 
 ## What
-Build a Vite + React JavaScript frontend app where a creator enters a celebrant name, age, optional from label, optional birthdate, and short wish notes, then gets a shareable URL containing the greeting data. Opening the link shows the Rev 11 simple dark birthday experience: a red/gold gift reveal, a high-angle two-layer strawberry cake with age-based lit candles, microphone or tap-anywhere blow interaction, then a post-blow celebration with balloons, curved birthday banner, floor gifts/hats, confetti, draggable sticky-note messages, looping birthday music, and upper-right New greeting/mute controls.
+Build a Vite + React JavaScript frontend app where a creator enters a celebrant name, age, optional from label, optional birthdate, and short wish notes, then gets a shareable URL containing the greeting data. Opening the link shows the Rev 12 simplified cartoon birthday-card experience: a dark, uncluttered greeting flow with a centered cartoon gift, centered cartoon cake, readable birthday message, microphone or tap-anywhere blow interaction, simple post-blow celebration, tidy readable sticky notes, looping birthday music, and preserved share/create behavior.
 
 ## Context
 
@@ -37,7 +37,7 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 ## Constraints
 
 **Must:**
-- For T17/Rev 11 execution, the Rev 11 requirements supersede earlier conflicting visual/interaction bullets in this section and in Done. Preserve the stable app contracts while replacing the accumulated UI.
+- For T18/Rev 12 execution, the Rev 12 requirements supersede earlier conflicting visual/interaction bullets in this section and in Done. Preserve the stable app contracts while simplifying the accumulated UI.
 - Scaffold a JavaScript Vite React app.
 - Encode name, age, optional from label, optional birthdate, and short notes into a versioned shareable URL hash using a compact payload, e.g. `#v=1&data=...`.
 - Preserve old generated links. Creating a new greeting must not overwrite or invalidate previous shared URLs because each link is self-contained in its hash payload.
@@ -89,6 +89,18 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - After blow-out, add small gifts and birthday hats on the floor, keep lightweight falling confetti, and show draggable colorful sticky-note sender messages with readable text.
 - After blow-out, place `New greeting` and mute controls as icon buttons in the upper-right area. Do not show these controls during the pre-blow gift/cake flow.
 - Add a readable small card on the cake with cursive text: `Happy [age] Birthday [Name], -[from]`.
+- Rev 12 supersedes earlier visual direction where it conflicts. Reset the UI to a simplified cartoon birthday-card experience instead of a birthday-room simulation.
+- Use a simple dark background across creator and celebrant pages, with happy high-contrast accent colors and readable text. Do not use gradient backgrounds.
+- Use a clean hand-drawn/cartoon visual language for the gift, cake, candles, notes, and celebration: bold outlines, soft shadows, playful rounded shapes, flat happy colors, and readable high-contrast text.
+- Remove visual clutter from the celebrant flow: no room simulation, no floor decorations, no decorative birthday hats, no pre-blow banner, no excessive floating objects, and no draggable notes.
+- Prioritize one focal point at a time: centered gift before opening, centered cake before blow-out, readable message and tidy celebration after blow-out.
+- Keep the gift centered, polished, and tappable. It may glow and open/reveal the cake, but the scene around it should stay minimal.
+- Keep the cake centered and visually clean. Prefer a simple illustrated/cartoon birthday cake over pseudo-real 3D complexity. The cake must be readable at mobile sizes.
+- Do not render one candle per age. Use a small, readable candle treatment that represents the birthday without overflowing the cake, such as number candles, a capped candle count, or grouped candles.
+- Keep candle flames as the tap/mic feedback indicator and preserve fast repeated taps anywhere on the celebrant screen.
+- After blow-out, use a simple celebration only: lightweight confetti, optional subtle balloons, the cake message, and tidy sticky notes. Avoid banners unless they are minimal and do not compete with the cake.
+- Show wish notes as tidy sticky-note cards in a readable row/grid or simple responsive cluster. Notes should not be draggable and should not overlap the cake, controls, or message.
+- Keep `New greeting` and mute available after blow-out, but present them as quiet controls that do not dominate the card.
 
 **Must not:**
 - Add a backend, database, server persistence, auth, or API.
@@ -128,6 +140,8 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - The Rev 11 redesign is broad and can easily regress behavior while replacing UI. -> **Mitigation:** limit implementation to `src/App.jsx` and `src/styles.css`; preserve `src/lib/shareData.js`, `src/lib/audio.js`, audio assets, validation rules, URL hash format, and Vercel static behavior.
 - Rendering one candle per age can become unusable for high ages. -> **Mitigation:** make candle rendering age-based but responsive; use compact grouping, scaled positioning, or representative display when required to keep the cake readable.
 - Draggable sticky notes can interfere with other interactions on mobile. -> **Mitigation:** scope drag behavior to post-blow sticky notes only, keep notes above the background but away from controls, and preserve readable text contrast.
+- The Rev 12 simplification can accidentally remove expected app behavior while removing visual clutter. -> **Mitigation:** limit simplification to `src/App.jsx` presentation structure and `src/styles.css`; preserve share-data helpers, audio helpers, validation, local draft behavior, mic detection, tap-anywhere fallback, and Vercel static behavior.
+- Removing one-candle-per-age can be misread as losing the age-specific greeting. -> **Mitigation:** keep the age prominent in the cake/message and use a readable symbolic candle treatment instead of literal candle overflow.
 
 **Pushback:**
 - Do not overbuild this with routing, global state libraries, or backend-shaped abstractions. Future-us will hate a tiny greeting app pretending to be a platform.
@@ -140,10 +154,11 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - Rev 9 is only a banner placement/choreography correction. Preserve the current cartoon flag style and do not rework the cake, creator page, share flow, microphone/audio behavior, sticky notes, or URL contract.
 - Rev 10 changes fallback interaction behavior. Keep microphone detection unchanged and do not alter share-data, creator, note, audio, or Vercel behavior while adding repeated-tap fallback progress.
 - Rev 11 is a full UI/UX reset and intentionally replaces earlier visual styling. Do not change URL hash data, creator validation, notes data shape, microphone detection, audio asset/loop behavior, Vercel static deployment, backend policy, or JavaScript-only stack while redesigning.
+- Rev 12 is a simplification reset, not another decorative pass. The cartoon style should come from shape language, outlines, color, and friendly proportions, not from adding more objects. Remove clutter instead of replacing it with new clutter. This means no room simulation, no draggable notes, no literal one-candle-per-age overflow, and no decorative elements that compete with the gift, cake, or message.
 
 ## Tasks
 
-**Execution note:** T1-T16 are completed project history. The next implementation pass for Rev 11 must execute only T17, then run the full Done checklist items affected by Rev 11.
+**Execution note:** T1-T17 are completed project history. The next implementation pass for Rev 12 must execute only T18, then run the full Done checklist items affected by Rev 12.
 
 ### T1: Repository metadata readiness
 **Status:** Completed in current repository history.  
@@ -242,12 +257,18 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 **Verify:** `npm run build`; Manual: open a generated link, reveal the cake, confirm one tap does not blow out the candle, confirm several fast taps fill visible progress and then blow out the candle, confirm mic blow detection still works unchanged, confirm the candle/base looks fully planted into the cake top, and confirm audio/notes/share/create-new behavior still works.
 
 ### T17: Full simple dark birthday experience redesign
+**Status:** Completed in current repository history.
 **Do:** Replace the current visual system with the Rev 11 simple dark birthday experience. Use a simple dark background on all pages with happy high-contrast colors and no gradient backgrounds. Redesign the creator page for readability and contrast while preserving all fields, validation, draft behavior, copy-link, and native-share behavior. In the celebrant pre-blow flow, remove the birthday banner and `New greeting` button, show a glowing red gift with golden/yellow ribbon and top bow, and animate the cover popping open to reveal the cake. On the blowing page, remove blower/tap progress UI; make candle flames the only blow/tap indicator and allow fast repeated taps anywhere on the screen while keeping microphone detection unchanged. Render candles based on age without overflowing the cake. Redesign the cake as a high-angle visible-top two-layer strawberry cake with smaller top layer, pink icing, semi-pink base, wavy dripping icing on each layer, contained sprinkles, glowing sparkles, and a white plate. After blow-out, show top clickable balloons that pop and regenerate, a curved hanging banner reading `happy [age] birthday`, small gifts and birthday hats on the floor, lightweight falling confetti, draggable colorful sticky-note sender messages with readable text, upper-right icon buttons for New greeting and mute, and a readable cursive cake card saying `Happy [age] Birthday [Name], -[from]`. Preserve URL hash share-data behavior, creator validation, notes data, audio behavior, Vercel static hosting, no backend/database, and no TypeScript.
 **Files:** `src/App.jsx`, `src/styles.css`
 **Verify:** `npm run build`; Manual: verify creator page readability on desktop/mobile; generate and open a link; confirm pre-blow shows only dark background, red/gold gift, and no banner/New greeting; confirm gift cover pops open and reveals the cake; confirm pre-blow cake has age-based lit candles and no blower/tap progress UI; confirm fast repeated taps anywhere and mic blow both work; confirm post-blow balloons pop/regenerate, curved banner reads `happy [age] birthday`, floor gifts/hats/confetti appear, sticky notes are draggable/readable, upper-right New greeting and mute icon buttons work, and URL/audio/share/create-new behavior remains unchanged.
 
+### T18: Simplified cartoon birthday-card UI reset
+**Do:** Replace the Rev 11 celebrant and creator visuals with the Rev 12 simplified cartoon birthday-card experience. Remove visual clutter and prioritize a clean dark greeting flow: centered cartoon gift first, centered cartoon cake second, readable birthday message after blow-out, simple celebration, and tidy sticky notes. Use hand-drawn/cartoon styling for the gift, cake, candles, notes, and celebration through bold outlines, soft shadows, playful rounded shapes, flat happy colors, and readable high-contrast text. Remove the birthday-room simulation, floor decorations, decorative hats, pre-blow banner, draggable notes, and literal one-candle-per-age rendering. Keep the creator page calm and readable with the same fields/actions. Keep the gift polished and centered with a simple reveal into the cake. Keep the cake centered, simple, readable, birthday-specific, and cartoon rather than pseudo-real 3D; represent age without candle overflow. Preserve microphone blow detection, fast repeated taps anywhere on the celebrant screen, candle flame feedback, looping audio/mute behavior, copy/native share, validation, local draft behavior, URL hash payload format, generated-link compatibility, Vercel static hosting, no backend/database, and no TypeScript.
+**Files:** `src/App.jsx`, `src/styles.css`
+**Verify:** `npm run build`; Manual: verify creator page readability on desktop/mobile; generate and open a link; confirm the pre-open view has only a dark background and centered cartoon gift; confirm the gift reveals a centered clean cartoon cake; confirm gift/cake/candles/notes/celebration use bold outlines, soft shadows, playful rounded shapes, flat happy colors, and readable high-contrast text; confirm there is no room simulation, floor decoration, decorative hats, pre-blow banner, draggable notes, or one-candle-per-age overflow; confirm repeated taps anywhere and microphone blow still work; confirm post-blow shows readable cake message, simple celebration, tidy readable sticky notes, and quiet New greeting/mute controls; confirm URL/audio/share/create-new behavior remains unchanged.
+
 ## Done
-**Rev 11 supersession note:** For T17 execution, Rev 11 visual/interaction criteria supersede older conflicting visual criteria. Do not preserve older requirements for bright/gradient rooms, pre-blow banners, pre-blow `New greeting`, visible tap progress UI, previous cake styles, previous banner styles, or letter/envelope note-opening behavior where they conflict with the Rev 11 reset.
+**Rev 12 supersession note:** For T18 execution, Rev 12 visual/interaction criteria supersede older conflicting visual criteria. Use a clean cartoon birthday-card style, but do not preserve older requirements for room simulation, floor gifts/hats, bright room reveal, pre-blow banners, visible tap progress UI, draggable notes, letter/envelope note-opening behavior, literal one-candle-per-age rendering, or decorative elements that compete with the centered gift/cake/message.
 
 - [ ] `git status --short` works before app implementation commits.
 - [ ] `npm run build` passes.
@@ -318,6 +339,16 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - [ ] Manual: post-blow upper-right icon buttons for New greeting and mute work.
 - [ ] Manual: cake card is readable and shows cursive text `Happy [age] Birthday [Name], -[from]`.
 - [ ] Manual: Rev 11 preserves URL hash share-data behavior, generated-link compatibility, creator validation, notes data, local draft behavior, audio behavior, reduced-motion handling, Vercel static hosting, no backend/database, and no TypeScript.
+- [ ] Manual: Rev 12 creator page is calm, dark, high-contrast, readable, lightly cartoon-styled, and preserves all existing creator fields/actions.
+- [ ] Manual: Rev 12 pre-open celebrant view has only a dark background and centered polished cartoon gift as the focal point.
+- [ ] Manual: gift reveal transitions into a centered clean cartoon cake without adding room-simulation clutter.
+- [ ] Manual: gift, cake, candles, notes, and celebration use a clean hand-drawn/cartoon visual language with bold outlines, soft shadows, playful rounded shapes, flat happy colors, and readable high-contrast text.
+- [ ] Manual: celebrant flow has no room simulation, floor decorations, decorative birthday hats, pre-blow banner, excessive floating objects, draggable notes, or literal one-candle-per-age overflow.
+- [ ] Manual: cake is simple, centered, cartoon, birthday-specific, readable on mobile, and represents the age without candle overflow.
+- [ ] Manual: candle flame feedback, fast repeated taps anywhere, and microphone blow detection still work.
+- [ ] Manual: post-blow celebration is simple and tidy: readable cake message, lightweight confetti, optional subtle balloons, tidy sticky notes, and quiet New greeting/mute controls.
+- [ ] Manual: sticky notes are readable non-draggable cards arranged in a tidy responsive row/grid or simple cluster that does not overlap the cake, controls, or message.
+- [ ] Manual: Rev 12 preserves URL hash share-data behavior, generated-link compatibility, creator validation, notes data, local draft behavior, audio behavior, reduced-motion handling, Vercel static hosting, no backend/database, and no TypeScript.
 - [ ] Manual: mute/unmute control works.
 - [ ] Manual: reduced-motion preference reduces or disables nonessential celebration motion.
 - [ ] Manual: Vercel settings are compatible: build command `npm run build`, output directory `dist`, no backend functions required.
@@ -379,3 +410,8 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 **Change:** Added a full UI/UX redesign reset to a simple dark, high-contrast birthday experience with a red/gold gift reveal, high-angle two-layer strawberry cake, age-based candles, tap-anywhere fallback without visible progress UI, post-blow balloons/banner/floor decorations/confetti, draggable sticky notes, and upper-right post-blow icon controls.
 **Reason:** User is not satisfied with the accumulated UI/UX and wants a simpler, clearer design direction with better contrast and a more birthday-specific gift/cake/celebration composition.
 **Updated Done criteria:** Added verification for dark/no-gradient backgrounds, creator readability, pre-blow gift-only flow, gift pop-open animation, age-based candles, candle-only blow indicator, tap-anywhere/mic behavior, strawberry cake design, post-blow balloons/banner/gifts/hats/confetti/draggable notes, cake card text, icon controls, and preservation of share-data/audio/notes/creator/Vercel/no-backend/no-TypeScript behavior. Rev 11 execution is limited to T17 because T1-T16 are already completed in repository history.
+
+### Rev 12 - 2026-06-01
+**Change:** Added a simplified full UI reset to remove visual clutter and prioritize a clean cartoon birthday-card experience: dark background, centered cartoon gift, centered cartoon cake, readable message, simple celebration, tidy non-draggable sticky notes, no room simulation, and no one-candle-per-age overflow.
+**Reason:** User feedback after Rev 11 says the design became worse; the next pass should reduce competing decorative ideas instead of adding more.
+**Updated Done criteria:** Added verification for calm creator readability, clean hand-drawn/cartoon visual language, centered gift/cake flow, removal of room simulation/floor decorations/hats/pre-blow banner/draggable notes/candle overflow, readable age representation, candle/mic/tap behavior preservation, simple post-blow celebration, tidy notes, and preservation of share-data/audio/creator/Vercel/no-backend/no-TypeScript behavior. Rev 12 execution is limited to T18 because T1-T17 are already completed in repository history.
