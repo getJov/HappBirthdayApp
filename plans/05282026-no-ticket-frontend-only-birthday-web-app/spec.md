@@ -75,7 +75,7 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - Redesign the post-open/post-blow celebration around a bright room reveal where the cake and cake message remain the primary focus; decorations, confetti, notes, and controls must support the scene rather than compete with it.
 - Redesign sticky notes so they read as friendly lightweight notes around the celebration scene, with responsive placement that avoids blocking the cake, controls, and message.
 - Keep the existing app functionality and data behavior unchanged during the redesign: URL hash format, validation limits, local draft behavior, create-new flow, mic behavior, tap fallback, audio behavior, mute behavior, and Vercel static compatibility must be preserved.
-- Add continuous birthday banners/garlands to the room background. Banners must sit behind the gift/cake/sticky notes/controls, feel integrated with the room, and remain lightweight/responsive.
+- Add a colorful cartoon birthday party flag banner to the room background. It should read clearly as a birthday banner, with playful hand-drawn/doodle-style hanging flags inspired by the provided reference, not as a subtle geometric garland. The banner must sit behind the gift/cake/sticky notes/controls, feel integrated with the room, and remain lightweight/responsive.
 - Fix the cake decoration placement so the candle, candle base/socket, and sprinkles visibly sit on the cake surfaces instead of floating outside the cake.
 
 **Must not:**
@@ -111,6 +111,7 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - A minimal magical direction can become too plain if decoration is removed without replacing hierarchy. -> **Mitigation:** use room lighting, gift focus, cake scale, color contrast, and restrained edge decorations as the visual interest instead of adding more objects.
 - Background banners can clutter the scene or compete with the cake. -> **Mitigation:** place banners in the background layer, keep opacity restrained, and verify they do not overlap primary UI on mobile.
 - Cake sprinkles and candle can drift visually when using absolute positioning and responsive scaling. -> **Mitigation:** anchor decoration elements inside the cake/top coordinate space and avoid large box-shadow offsets that extend beyond the cake.
+- Recreating the referenced banner too literally could introduce licensing/attribution problems. -> **Mitigation:** use the reference only as visual direction; create original CSS/markup shapes with similar colorful cartoon birthday flag-banner characteristics.
 
 **Pushback:**
 - Do not overbuild this with routing, global state libraries, or backend-shaped abstractions. Future-us will hate a tiny greeting app pretending to be a platform.
@@ -119,10 +120,11 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - User-facing copy should not explain the implementation. People creating a birthday link need direct labels and actions, not engineering details.
 - The current UI has accumulated too many disconnected visual ideas. Do not keep layering fixes on top of the existing look. Rev 6 should reset the visual language while preserving the product contract.
 - Rev 7 is a visual correction, not another redesign. Do not change the share-data contract, microphone/audio behavior, creator flow, note behavior, or app architecture to fix decoration placement.
+- Rev 8 is only a banner-style correction. Do not rework the cake, creator page, share flow, microphone/audio behavior, sticky notes, or URL contract while replacing the current subtle garland.
 
 ## Tasks
 
-**Execution note:** T1-T12 are completed project history. The next implementation pass for Rev 7 must execute only T13, then run the full Done checklist items affected by Rev 7.
+**Execution note:** T1-T13 are completed project history. The next implementation pass for Rev 8 must execute only T14, then run the full Done checklist items affected by Rev 8.
 
 ### T1: Repository metadata readiness
 **Status:** Completed in current repository history.  
@@ -197,9 +199,15 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 **Verify:** `npm run build`; Manual: create a greeting, open the generated link, confirm the creator page feels modern and focused, the pre-open scene has one clear glowing gift focal point in a softly dimmed room, the cake/message are the dominant post-open/post-blow elements, notes/decorations do not block the cake or controls on desktop/mobile, and all existing interactions still work.
 
 ### T13: Background banners and cake decoration anchoring
+**Status:** Completed in current repository history.
 **Do:** Add continuous birthday banners/garlands to the celebrant room background while keeping them behind the stage content and responsive on desktop/mobile. Fix the cake decoration anchoring so the candle and candle base/socket visibly attach to the top frosting surface, and sprinkles stay contained on the cake/frosting surfaces instead of appearing outside or floating. Preserve all existing functionality and share-data behavior: URL hash encoding/decoding, validation limits, local draft behavior, create-new flow, mic countdown/detection, tap fallback, candle blow state, audio loop/mute, sticky note content, copy-link/native-share, reduced-motion handling, and Vercel static compatibility.
 **Files:** `src/App.jsx`, `src/styles.css`
 **Verify:** `npm run build`; Manual: open a generated link on desktop and mobile, confirm continuous banners appear in the room background behind the gift/cake/notes/controls, confirm the candle is visually planted into the cake top, confirm sprinkles stay on cake/frosting surfaces, and confirm all existing interactions still work.
+
+### T14: Cartoon birthday flag banner correction
+**Do:** Replace the current subtle/geometric room garland with an original colorful cartoon birthday party flag banner inspired by the provided Vecteezy reference. The banner should use playful hand-drawn/doodle-style hanging flags and clearly read as a birthday banner. It may include birthday lettering if it remains readable and responsive, but must not use the referenced asset directly. Keep the banner behind the gift/cake/sticky notes/controls and preserve all existing functionality and share-data behavior.
+**Files:** `src/App.jsx`, `src/styles.css`
+**Verify:** `npm run build`; Manual: open a generated link on desktop and mobile, confirm the banner clearly reads as a colorful cartoon birthday party flag banner rather than a subtle garland, confirm it sits behind the gift/cake/notes/controls without blocking them, and confirm all existing interactions still work.
 
 ## Done
 - [ ] `git status --short` works before app implementation commits.
@@ -247,6 +255,9 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - [ ] Manual: candle and candle base/socket visibly attach to the top frosting surface and no longer appear floating.
 - [ ] Manual: sprinkles stay contained on the cake/frosting surfaces and do not appear outside the cake.
 - [ ] Manual: Rev 7 preserves existing URL hash data behavior, generated-link compatibility, local draft behavior, validation limits, create-new flow, mic fallback behavior, audio behavior, reduced-motion handling, and Vercel static build behavior.
+- [ ] Manual: the room banner clearly reads as a colorful cartoon birthday party flag banner with playful hand-drawn/doodle-style flags, not as a subtle geometric garland.
+- [ ] Manual: the banner is original CSS/markup styling inspired by the reference and does not directly use the Vecteezy asset.
+- [ ] Manual: Rev 8 preserves existing URL hash data behavior, generated-link compatibility, local draft behavior, validation limits, create-new flow, mic fallback behavior, audio behavior, reduced-motion handling, and Vercel static build behavior.
 - [ ] Manual: mute/unmute control works.
 - [ ] Manual: reduced-motion preference reduces or disables nonessential celebration motion.
 - [ ] Manual: Vercel settings are compatible: build command `npm run build`, output directory `dist`, no backend functions required.
@@ -288,3 +299,8 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 **Change:** Added continuous celebrant-room birthday banners/garlands and a focused cake decoration anchoring correction for the candle, candle base/socket, and sprinkles.
 **Reason:** User feedback after Rev 6 found the background still needs continuous birthday banners and that the sprinkles/candle visually appear outside or floating instead of attached to the cake.
 **Updated Done criteria:** Added verification for background banners staying behind content, responsive/nonblocking banner behavior, visibly attached candle/base, contained sprinkles, and preservation of all existing functionality/share-data behavior. Rev 7 execution is limited to T13 because T1-T12 are already completed in repository history.
+
+### Rev 8 - 2026-05-31
+**Change:** Added a focused correction to replace the subtle/geometric garland with an original colorful cartoon birthday party flag banner inspired by the user-provided reference.
+**Reason:** User clarified that the intended decoration is a recognizable birthday flag banner in a colorful cartoon/doodle style, not a subtle repeating garland.
+**Updated Done criteria:** Added verification that the banner clearly reads as a birthday party flag banner, remains behind content, is responsive/nonblocking, does not directly use the referenced Vecteezy asset, and preserves all existing functionality/share-data behavior. Rev 8 execution is limited to T14 because T1-T13 are already completed in repository history.

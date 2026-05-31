@@ -338,8 +338,20 @@ function CelebrantExperience({ greeting, onCreateNew }) {
     <main className={`celebrant-page ${giftOpen ? 'gift-is-open' : ''} ${candleBlown ? 'candle-is-out' : ''}`}>
       <div className="room-backdrop" aria-hidden="true">
         <span className="room-wall" />
-        <span className="room-banner banner-one" />
-        <span className="room-banner banner-two" />
+        <div className="birthday-banner banner-one">
+          {'HAPPY'.split('').map((letter, index) => (
+            <span className="banner-flag" key={`${letter}-${index}`}>
+              {letter}
+            </span>
+          ))}
+        </div>
+        <div className="birthday-banner banner-two">
+          {'BIRTHDAY'.split('').map((letter, index) => (
+            <span className="banner-flag" key={`${letter}-${index}`}>
+              {letter}
+            </span>
+          ))}
+        </div>
         <span className="room-light" />
         <span className="room-floor" />
       </div>

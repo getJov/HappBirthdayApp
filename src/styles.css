@@ -408,7 +408,7 @@ p {
 .room-wall,
 .room-floor,
 .room-light,
-.room-banner {
+.birthday-banner {
   position: absolute;
   display: block;
   inset-inline: 0;
@@ -442,50 +442,125 @@ p {
   filter: blur(2px);
 }
 
-.room-banner {
+.birthday-banner {
   z-index: 1;
   left: 50%;
-  width: min(1320px, 128vw);
-  height: 74px;
-  opacity: 0.72;
+  width: min(860px, 92vw);
+  height: 88px;
+  display: flex;
+  justify-content: center;
+  gap: clamp(6px, 1.2vw, 13px);
+  opacity: 0.9;
   transform-origin: center;
 }
 
-.room-banner::before {
+.birthday-banner::before {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 10px;
-  height: 2px;
+  left: 4%;
+  right: 4%;
+  top: 11px;
+  height: 4px;
   border-radius: 999px;
-  background: rgba(255, 248, 237, 0.5);
-  box-shadow: 0 0 12px rgba(255, 216, 117, 0.12);
+  background: rgba(255, 248, 237, 0.8);
+  box-shadow:
+    0 2px 0 rgba(47, 40, 56, 0.14),
+    0 0 16px rgba(255, 216, 117, 0.18);
+  transform: rotate(-1deg);
 }
 
-.room-banner::after {
+.banner-flag {
+  position: relative;
+  z-index: 1;
+  width: clamp(42px, 6.2vw, 62px);
+  height: clamp(54px, 7.8vw, 74px);
+  display: grid;
+  place-items: center;
+  margin-top: 13px;
+  border: 3px solid rgba(47, 40, 56, 0.32);
+  border-radius: 12px 12px 18px 18px;
+  color: #2f2838;
+  background: #ffd875;
+  box-shadow:
+    inset 3px 4px rgba(255, 255, 255, 0.28),
+    0 9px 16px rgba(13, 8, 28, 0.16);
+  font-family: "Comic Sans MS", "Segoe Print", "Trebuchet MS", cursive;
+  font-size: clamp(1.05rem, 2.8vw, 1.65rem);
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 1px 1px rgba(255, 255, 255, 0.62);
+  transform: rotate(var(--flag-tilt, -3deg));
+}
+
+.banner-flag::before {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 12px;
-  height: 44px;
-  background:
-    conic-gradient(from 45deg at 50% 0, transparent 0 25%, #ffd875 0 50%, transparent 0) 0 0 / 88px 42px repeat-x,
-    conic-gradient(from 45deg at 50% 0, transparent 0 25%, #f7908e 0 50%, transparent 0) 29px 0 / 88px 42px repeat-x,
-    conic-gradient(from 45deg at 50% 0, transparent 0 25%, #8fd9ee 0 50%, transparent 0) 58px 0 / 88px 42px repeat-x;
-  filter: drop-shadow(0 8px 10px rgba(13, 8, 28, 0.14));
+  top: -16px;
+  left: 50%;
+  width: 10px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(255, 248, 237, 0.82);
+  box-shadow: 0 1px 0 rgba(47, 40, 56, 0.18);
+  transform: translateX(-50%);
+}
+
+.banner-flag::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  width: 22px;
+  height: 18px;
+  background: inherit;
+  border-right: 3px solid rgba(47, 40, 56, 0.32);
+  border-bottom: 3px solid rgba(47, 40, 56, 0.32);
+  transform: translateX(-50%) rotate(45deg);
+  transform-origin: center;
 }
 
 .banner-one {
-  top: clamp(72px, 13vh, 118px);
+  top: clamp(64px, 11vh, 104px);
   transform: translateX(-50%) rotate(-3deg);
 }
 
 .banner-two {
-  top: clamp(128px, 22vh, 186px);
-  opacity: 0.5;
+  top: clamp(132px, 21vh, 178px);
+  opacity: 0.84;
   transform: translateX(-50%) rotate(3deg);
+}
+
+.banner-one .banner-flag:nth-child(1),
+.banner-two .banner-flag:nth-child(5) {
+  --flag-tilt: -7deg;
+  background: #f7908e;
+}
+
+.banner-one .banner-flag:nth-child(2),
+.banner-two .banner-flag:nth-child(2),
+.banner-two .banner-flag:nth-child(7) {
+  --flag-tilt: 5deg;
+  background: #8fd9ee;
+}
+
+.banner-one .banner-flag:nth-child(3),
+.banner-two .banner-flag:nth-child(3) {
+  --flag-tilt: -2deg;
+  background: #8dd9bd;
+}
+
+.banner-one .banner-flag:nth-child(4),
+.banner-two .banner-flag:nth-child(1),
+.banner-two .banner-flag:nth-child(6) {
+  --flag-tilt: 7deg;
+  background: #ffd875;
+}
+
+.banner-one .banner-flag:nth-child(5),
+.banner-two .banner-flag:nth-child(4),
+.banner-two .banner-flag:nth-child(8) {
+  --flag-tilt: -5deg;
+  background: #f8a7b7;
 }
 
 .celebrant-page.candle-is-out {
@@ -509,12 +584,12 @@ p {
   background: radial-gradient(circle, rgba(255, 244, 205, 0.98), rgba(255, 216, 117, 0.36) 46%, transparent 72%);
 }
 
-.candle-is-out .room-banner {
+.candle-is-out .birthday-banner {
   opacity: 0.82;
 }
 
-.candle-is-out .room-banner::before {
-  background: rgba(130, 82, 47, 0.24);
+.candle-is-out .birthday-banner::before {
+  background: rgba(130, 82, 47, 0.28);
 }
 
 .confetti-canvas {
@@ -1221,16 +1296,31 @@ p {
     top: 8%;
   }
 
-  .room-banner {
-    width: 152vw;
+  .birthday-banner {
+    width: 112vw;
+    gap: 5px;
+  }
+
+  .banner-flag {
+    width: clamp(30px, 8.5vw, 42px);
+    height: clamp(42px, 11vw, 56px);
+    border-width: 2px;
+    font-size: clamp(0.82rem, 3.8vw, 1.05rem);
+  }
+
+  .banner-flag::after {
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    width: 16px;
+    height: 14px;
   }
 
   .banner-one {
-    top: 86px;
+    top: 76px;
   }
 
   .banner-two {
-    top: 142px;
+    top: 132px;
   }
 
   .gift-box {
