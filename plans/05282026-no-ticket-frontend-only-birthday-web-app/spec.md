@@ -14,7 +14,7 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - `vite.config.js` - Vite React plugin configuration and static build behavior.
 - `src/main.jsx` - React mount entry.
 - `src/App.jsx` - top-level creator/share/celebrant flow.
-- `src/styles.css` - responsive dark festive UI, cake, gift box, and animation styles.
+- `src/styles.css` - responsive visual system, creator layout, birthday room, cake, gift box, notes, and animation styles.
 - `src/lib/shareData.js` - encode/decode URL hash data and local draft helpers.
 - `src/lib/audio.js` - microphone blow detection and HTML5 audio control helpers.
 - `src/components/ConfettiCanvas.jsx` - lightweight canvas celebration effects.
@@ -69,6 +69,12 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - Respect `prefers-reduced-motion` by reducing or disabling nonessential animation intensity.
 - Maintain Vercel static deployment compatibility. No route handling should require a backend; hash-based links should load on direct visits.
 - Keep creator-page copy user-facing only. Remove technical/internal explanations such as frontend-only, URL hash, local browser state, independent-link implementation details, and database/backend language from visible UI. Keep only the information users need to create and share a greeting.
+- Replace the accumulated visual style with one coherent minimal magical birthday room reveal direction. The experience should feel cleaner, modern, warm, all-ages, and intentional.
+- Redesign the creator page around a calm, premium birthday-maker interface with clear hierarchy, simpler surfaces, warmer color discipline, modern spacing, and a preview that visually matches the birthday scene.
+- Redesign the gift reveal scene so the unopened gift is the single pre-open focal point in a softly dimmed room with a clear cue, restrained glow, and minimal competing decoration.
+- Redesign the post-open/post-blow celebration around a bright room reveal where the cake and cake message remain the primary focus; decorations, confetti, notes, and controls must support the scene rather than compete with it.
+- Redesign sticky notes so they read as friendly lightweight notes around the celebration scene, with responsive placement that avoids blocking the cake, controls, and message.
+- Keep the existing app functionality and data behavior unchanged during the redesign: URL hash format, validation limits, local draft behavior, create-new flow, mic behavior, tap fallback, audio behavior, mute behavior, and Vercel static compatibility must be preserved.
 
 **Must not:**
 - Add a backend, database, server persistence, auth, or API.
@@ -99,16 +105,19 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - Vercel deploys static files behind HTTPS, but localhost and preview environments differ. -> **Mitigation:** keep mic fallback mandatory and document build/output assumptions.
 - Cake/message visibility can regress if decorations compete with the inscription. -> **Mitigation:** make the cake/message hierarchy explicit: large cake, attached candle, clean surface, high-contrast inscription revealed only after blow-out.
 - Decorative hats/notes can clutter mobile screens. -> **Mitigation:** use responsive placement, cap density on small screens, and respect reduced-motion preferences.
+- A full visual redesign can accidentally change feature behavior or share-link compatibility. -> **Mitigation:** limit Rev 6 to `src/App.jsx` structure needed for presentation and `src/styles.css`; preserve share-data, audio, mic, validation, and routing helpers.
+- A minimal magical direction can become too plain if decoration is removed without replacing hierarchy. -> **Mitigation:** use room lighting, gift focus, cake scale, color contrast, and restrained edge decorations as the visual interest instead of adding more objects.
 
 **Pushback:**
 - Do not overbuild this with routing, global state libraries, or backend-shaped abstractions. Future-us will hate a tiny greeting app pretending to be a platform.
 - URL-only sharing means the link itself contains the greeting data. Keep private/sensitive messages out of scope unless a backend is added later.
 - This should still be a birthday app, not a generic party dashboard. Avoid generic gradient-card clutter; make the gift, candle, cake, letters, and room-light transition carry the experience.
 - User-facing copy should not explain the implementation. People creating a birthday link need direct labels and actions, not engineering details.
+- The current UI has accumulated too many disconnected visual ideas. Do not keep layering fixes on top of the existing look. Rev 6 should reset the visual language while preserving the product contract.
 
 ## Tasks
 
-**Execution note:** T1-T10 are completed project history. The next implementation pass for Rev 5 must execute only T11, then run the full Done checklist items affected by Rev 5.
+**Execution note:** T1-T11 are completed project history. The next implementation pass for Rev 6 must execute only T12, then run the full Done checklist items affected by Rev 6.
 
 ### T1: Repository metadata readiness
 **Status:** Completed in current repository history.  
@@ -171,9 +180,15 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 **Verify:** `npm run build`; Manual: after blowing out the candle, click/tap each visible note and confirm it opens; confirm the redesigned cake is visually stronger than the previous version; confirm the birthday message has no white panel/card behind it and remains readable as part of the cake design.
 
 ### T11: CSS pseudo-3D birthday cake
-**Do:** Redesign the birthday cake using CSS pseudo-3D, not Three.js or a new dependency. Add layered cake depth, a top frosting ellipse, shaded side/front faces, stronger contact shadows, an attached candle base/socket on the top surface, and a piped front-face birthday message that reads as icing on the cake. Preserve existing celebration flow, share-data behavior, microphone behavior, audio behavior, sticky notes, and creator form behavior.  
-**Files:** `src/App.jsx`, `src/styles.css`  
+**Status:** Completed in current repository history.
+**Do:** Redesign the birthday cake using CSS pseudo-3D, not Three.js or a new dependency. Add layered cake depth, a top frosting ellipse, shaded side/front faces, stronger contact shadows, an attached candle base/socket on the top surface, and a piped front-face birthday message that reads as icing on the cake. Preserve existing celebration flow, share-data behavior, microphone behavior, audio behavior, sticky notes, and creator form behavior.
+**Files:** `src/App.jsx`, `src/styles.css`
 **Verify:** `npm run build`; Manual: open a generated link, reveal the cake, confirm the cake reads as pseudo-3D with visible top/side/front depth, the candle base is attached to the top surface, and after blow-out the birthday message appears piped onto the front face rather than floating or sitting on a panel.
+
+### T12: Minimal magical visual redesign
+**Do:** Replace the current accumulated visual design with a cohesive minimal magical birthday room reveal. Redesign the creator page, gift reveal scene, cake presentation, sticky notes, decorations, color palette, spacing, and responsive layout for a cleaner modern all-ages experience. Preserve all existing functionality and data behavior: URL hash encoding/decoding, validation limits, local draft behavior, create-new flow, mic countdown/detection, tap fallback, candle blow state, audio loop/mute, sticky note content, copy-link/native-share, reduced-motion handling, and Vercel static compatibility. Use existing stack and assets only; do not add dependencies, backend code, TypeScript, routing changes, or new persistence.
+**Files:** `src/App.jsx`, `src/styles.css`
+**Verify:** `npm run build`; Manual: create a greeting, open the generated link, confirm the creator page feels modern and focused, the pre-open scene has one clear glowing gift focal point in a softly dimmed room, the cake/message are the dominant post-open/post-blow elements, notes/decorations do not block the cake or controls on desktop/mobile, and all existing interactions still work.
 
 ## Done
 - [ ] `git status --short` works before app implementation commits.
@@ -210,6 +225,12 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 - [ ] Manual: cake uses CSS pseudo-3D with visible layered depth, top frosting ellipse, shaded side/front faces, and strong contact shadow.
 - [ ] Manual: candle has a visible base/socket attached to the cake top surface.
 - [ ] Manual: birthday message appears as piped icing on the front cake face, not as floating text or a panel.
+- [ ] Manual: creator page uses a cohesive modern birthday-maker design with clear hierarchy, restrained copy, consistent spacing, and no technical/internal implementation explanations.
+- [ ] Manual: pre-open birthday scene follows the minimal magical room reveal direction: softly dimmed room, one clear gift focal point, clear open cue, and restrained glow.
+- [ ] Manual: post-blow scene brightens into a clean all-ages celebration where the cake and birthday message remain the primary focus.
+- [ ] Manual: redesigned cake, sticky notes, decorations, controls, and confetti feel visually consistent instead of patched together.
+- [ ] Manual: sticky notes and decorations avoid blocking the cake, birthday message, mic controls, mute control, and New greeting button on desktop and mobile.
+- [ ] Manual: Rev 6 visual redesign preserves existing URL hash data behavior, generated-link compatibility, local draft behavior, validation limits, create-new flow, mic fallback behavior, audio behavior, reduced-motion handling, and Vercel static build behavior.
 - [ ] Manual: mute/unmute control works.
 - [ ] Manual: reduced-motion preference reduces or disables nonessential celebration motion.
 - [ ] Manual: Vercel settings are compatible: build command `npm run build`, output directory `dist`, no backend functions required.
@@ -241,3 +262,8 @@ Build a Vite + React JavaScript frontend app where a creator enters a celebrant 
 **Change:** Added a focused CSS pseudo-3D cake pass with layered depth, side shading, top frosting ellipse, attached candle base, and piped front-face birthday message.  
 **Reason:** User wants the cake to look more dimensional while keeping the app lightweight and frontend-only.  
 **Updated Done criteria:** Added verification for pseudo-3D depth, top/side/front cake faces, attached candle base/socket, contact shadow, and front-face piped message. Rev 5 execution is limited to T11 because T1-T10 are already completed in repository history.
+
+### Rev 6 - 2026-05-31
+**Change:** Added a full visual redesign pass using a minimal magical birthday room reveal direction, covering the creator page, gift reveal scene, cake presentation, sticky notes, decorations, color palette, spacing, and responsive layout.
+**Reason:** User feedback rejected the accumulated visual design as a whole; the next pass should reset the visual language instead of continuing isolated polish fixes.
+**Updated Done criteria:** Added verification that the creator page, pre-open room, post-blow celebration, cake/message hierarchy, sticky notes, decorations, controls, and responsive layout feel cohesive, cleaner, modern, and all-ages while preserving all existing functionality and data behavior. Rev 6 execution is limited to T12 because T1-T11 are already completed in repository history.

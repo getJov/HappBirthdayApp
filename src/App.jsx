@@ -124,143 +124,149 @@ function Creator() {
 
   return (
     <main className="creator-page">
-      <section className="creator-hero" aria-labelledby="creator-title">
-        <p className="eyebrow">Birthday surprise maker</p>
-        <h1 id="creator-title">Create a birthday surprise</h1>
-        <p>Personalize the cake, add a few wishes, then send the birthday link.</p>
-      </section>
+      <div className="creator-shell">
+        <section className="creator-hero" aria-labelledby="creator-title">
+          <p className="eyebrow">Birthday surprise maker</p>
+          <h1 id="creator-title">Create a birthday surprise</h1>
+          <p>Personalize the cake, add a few wishes, then send the birthday link.</p>
+        </section>
 
-      <section className="builder-grid" aria-label="Birthday greeting builder">
-        <form className="builder-form" onSubmit={(event) => event.preventDefault()}>
-          <Field label="Celebrant name" help={`${form.name.length}/${LIMITS.name}`}>
-            <input
-              value={form.name}
-              maxLength={LIMITS.name}
-              placeholder="Maria"
-              onChange={(event) => updateField('name', event.target.value)}
-            />
-          </Field>
-
-          <div className="field-row">
-            <Field label="Age" help={`${LIMITS.ageMin}-${LIMITS.ageMax}`}>
+        <section className="builder-grid" aria-label="Birthday greeting builder">
+          <form className="builder-form" onSubmit={(event) => event.preventDefault()}>
+            <Field label="Celebrant name" help={`${form.name.length}/${LIMITS.name}`}>
               <input
-                value={form.age}
-                inputMode="numeric"
-                placeholder="21"
-                onChange={(event) => updateField('age', event.target.value.replace(/\D/g, ''))}
+                value={form.name}
+                maxLength={LIMITS.name}
+                placeholder="Maria"
+                onChange={(event) => updateField('name', event.target.value)}
               />
             </Field>
 
-            <Field label="Birthdate optional" help="Shown on notes">
-              <input
-                value={form.birthdate}
-                type="date"
-                onChange={(event) => updateField('birthdate', event.target.value)}
-              />
-            </Field>
-          </div>
-
-          <Field label="From" help={`${form.from.length}/${LIMITS.from}`}>
-            <input
-              value={form.from}
-              maxLength={LIMITS.from}
-              placeholder="Friends"
-              onChange={(event) => updateField('from', event.target.value)}
-            />
-          </Field>
-
-          <div className="notes-header">
-            <div>
-              <h2>Wish notes</h2>
-              <p>{filledNotes}/{LIMITS.noteCount} short notes for the celebrant.</p>
-            </div>
-            <button className="icon-button" type="button" onClick={addNote} disabled={form.notes.length >= LIMITS.noteCount} title="Add note">
-              +
-            </button>
-          </div>
-
-          <div className="note-list">
-            {form.notes.map((note, index) => (
-              <label className="note-field" key={index}>
-                <span>Note {index + 1}</span>
-                <textarea
-                  value={note}
-                  maxLength={LIMITS.noteLength}
-                  rows="3"
-                  placeholder={'Wishing you a bright and beautiful year.\n- from sender'}
-                  onChange={(event) => updateNote(index, event.target.value)}
+            <div className="field-row">
+              <Field label="Age" help={`${LIMITS.ageMin}-${LIMITS.ageMax}`}>
+                <input
+                  value={form.age}
+                  inputMode="numeric"
+                  placeholder="21"
+                  onChange={(event) => updateField('age', event.target.value.replace(/\D/g, ''))}
                 />
-                <small>{note.length}/{LIMITS.noteLength}</small>
-                {form.notes.length > 1 && (
-                  <button type="button" className="text-button" onClick={() => removeNote(index)}>
-                    Remove
-                  </button>
-                )}
-              </label>
-            ))}
-          </div>
+              </Field>
 
-          {errors.length > 0 && (
-            <div className="error-box" role="alert">
-              {errors.map((error) => (
-                <p key={error}>{error}</p>
+              <Field label="Birthdate optional" help="Shown on notes">
+                <input
+                  value={form.birthdate}
+                  type="date"
+                  onChange={(event) => updateField('birthdate', event.target.value)}
+                />
+              </Field>
+            </div>
+
+            <Field label="From" help={`${form.from.length}/${LIMITS.from}`}>
+              <input
+                value={form.from}
+                maxLength={LIMITS.from}
+                placeholder="Friends"
+                onChange={(event) => updateField('from', event.target.value)}
+              />
+            </Field>
+
+            <div className="notes-header">
+              <div>
+                <h2>Wish notes</h2>
+                <p>{filledNotes}/{LIMITS.noteCount} short notes for the celebrant.</p>
+              </div>
+              <button className="icon-button" type="button" onClick={addNote} disabled={form.notes.length >= LIMITS.noteCount} title="Add note">
+                +
+              </button>
+            </div>
+
+            <div className="note-list">
+              {form.notes.map((note, index) => (
+                <label className="note-field" key={index}>
+                  <span>Note {index + 1}</span>
+                  <textarea
+                    value={note}
+                    maxLength={LIMITS.noteLength}
+                    rows="3"
+                    placeholder={'Wishing you a bright and beautiful year.\n- from sender'}
+                    onChange={(event) => updateNote(index, event.target.value)}
+                  />
+                  <small>{note.length}/{LIMITS.noteLength}</small>
+                  {form.notes.length > 1 && (
+                    <button type="button" className="text-button" onClick={() => removeNote(index)}>
+                      Remove
+                    </button>
+                  )}
+                </label>
               ))}
             </div>
-          )}
 
-          <div className="action-row">
-            <button type="button" className="primary-button" onClick={generateLink}>
-              Generate link
-            </button>
-            <button type="button" className="secondary-button" onClick={() => setForm(defaultGreeting)}>
-              Reset
-            </button>
-          </div>
-        </form>
-
-        <aside className="share-panel" aria-label="Generated birthday link">
-          <div className="cake-preview" aria-hidden="true">
-            <div className="preview-flame" />
-            <div className="preview-cake">
-              <span>{form.age ? ordinalAge(form.age) : '21st'}</span>
-            </div>
-          </div>
-
-          <h2>Share link</h2>
-          <p className="muted">Copy the link when your birthday surprise is ready.</p>
-
-          <div className="url-meter">
-            <span>Link size</span>
-            <strong>{previewUrlLength.length}/{LIMITS.urlLength}</strong>
-          </div>
-
-          {shareUrl ? (
-            <>
-              <textarea className="share-url" value={shareUrl} readOnly rows="5" aria-label="Birthday share link" />
-              <div className="action-row stacked">
-                <button type="button" className="primary-button" onClick={copyLink}>
-                  {copyState === 'copied' ? 'Copied' : 'Copy link'}
-                </button>
-                {nativeShareAvailable && (
-                  <button type="button" className="secondary-button" onClick={nativeShare}>
-                    Native share
-                  </button>
-                )}
+            {errors.length > 0 && (
+              <div className="error-box" role="alert">
+                {errors.map((error) => (
+                  <p key={error}>{error}</p>
+                ))}
               </div>
-              {copyState === 'manual' && (
-                <p className="small-warning">Clipboard was blocked. Select and copy the link manually.</p>
-              )}
-              <p className="link-note">
-                Ready for another friend? Use New greeting from the birthday page.
-              </p>
-            </>
-          ) : (
-            <div className="empty-share">
-              <p>Generate a link when the greeting is ready.</p>
+            )}
+
+            <div className="action-row">
+              <button type="button" className="primary-button" onClick={generateLink}>
+                Generate link
+              </button>
+              <button type="button" className="secondary-button" onClick={() => setForm(defaultGreeting)}>
+                Reset
+              </button>
             </div>
-          )}
-        </aside>
-      </section>
+          </form>
+
+          <aside className="share-panel" aria-label="Generated birthday link">
+            <div className="cake-preview" aria-hidden="true">
+              <div className="preview-room">
+                <span className="preview-light" />
+                <span className="preview-gift" />
+                <span className="preview-flame" />
+                <div className="preview-cake">
+                  <span>{form.age ? ordinalAge(form.age) : '21st'}</span>
+                </div>
+              </div>
+            </div>
+
+            <h2>Share link</h2>
+            <p className="muted">Copy the link when your birthday surprise is ready.</p>
+
+            <div className="url-meter">
+              <span>Link size</span>
+              <strong>{previewUrlLength.length}/{LIMITS.urlLength}</strong>
+            </div>
+
+            {shareUrl ? (
+              <>
+                <textarea className="share-url" value={shareUrl} readOnly rows="5" aria-label="Birthday share link" />
+                <div className="action-row stacked">
+                  <button type="button" className="primary-button" onClick={copyLink}>
+                    {copyState === 'copied' ? 'Copied' : 'Copy link'}
+                  </button>
+                  {nativeShareAvailable && (
+                    <button type="button" className="secondary-button" onClick={nativeShare}>
+                      Native share
+                    </button>
+                  )}
+                </div>
+                {copyState === 'manual' && (
+                  <p className="small-warning">Clipboard was blocked. Select and copy the link manually.</p>
+                )}
+                <p className="link-note">
+                  Ready for another friend? Use New greeting from the birthday page.
+                </p>
+              </>
+            ) : (
+              <div className="empty-share">
+                <p>Generate a link when the greeting is ready.</p>
+              </div>
+            )}
+          </aside>
+        </section>
+      </div>
     </main>
   );
 }
@@ -330,6 +336,11 @@ function CelebrantExperience({ greeting, onCreateNew }) {
 
   return (
     <main className={`celebrant-page ${giftOpen ? 'gift-is-open' : ''} ${candleBlown ? 'candle-is-out' : ''}`}>
+      <div className="room-backdrop" aria-hidden="true">
+        <span className="room-light" />
+        <span className="room-wall" />
+        <span className="room-floor" />
+      </div>
       <ConfettiCanvas active={candleBlown} />
       {candleBlown && (
         <div className="party-decorations" aria-hidden="true">
@@ -364,6 +375,7 @@ function CelebrantExperience({ greeting, onCreateNew }) {
         )}
 
         <div className="cake-scene" aria-hidden={!giftOpen}>
+          <span className="cake-table" aria-hidden="true" />
           <div className="cake">
             <div
               className="candle"
