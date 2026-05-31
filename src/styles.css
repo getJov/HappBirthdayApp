@@ -556,8 +556,11 @@ p {
   font-family: "Brush Script MT", "Segoe Script", cursive;
   font-size: clamp(1.15rem, 3vw, 1.9rem);
   font-weight: 700;
-  color: #5a210e;
-  text-shadow: 0 1px 0 rgba(255, 250, 242, 0.65);
+  color: #fffaf2;
+  -webkit-text-stroke: 0.6px rgba(85, 28, 11, 0.36);
+  text-shadow:
+    0 2px 0 rgba(85, 28, 11, 0.52),
+    0 0 12px rgba(255, 209, 102, 0.38);
 }
 
 .cake-decorations {
@@ -826,17 +829,31 @@ p {
   position: absolute;
   left: var(--letter-left);
   top: var(--letter-top);
-  width: clamp(118px, 22vw, 168px);
-  height: 104px;
-  border-radius: 8px;
+  width: clamp(142px, 24vw, 190px);
+  min-height: 116px;
+  border-radius: 4px;
+  padding: 18px 16px 16px;
   color: #5b2c13;
-  background: #fff8e6;
-  box-shadow: 0 18px 38px rgba(116, 66, 15, 0.24);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 38%),
+    #ffe779;
+  box-shadow:
+    0 18px 38px rgba(116, 66, 15, 0.22),
+    inset 0 -10px rgba(176, 132, 0, 0.08);
   transform: rotate(var(--letter-rotate));
   animation: letterFloat 3.4s ease-in-out infinite;
   animation-delay: calc(var(--letter-index) * -420ms);
-  pointer-events: auto;
+  pointer-events: none;
 }
+
+.letter-envelope p {
+  margin: 0;
+  white-space: pre-wrap;
+  font-size: clamp(0.9rem, 2.6vw, 1rem);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 
 .letter-envelope:hover,
 .letter-envelope:focus-visible {
@@ -1009,8 +1026,9 @@ p {
   }
 
   .letter-envelope {
-    width: 116px;
-    height: 92px;
+    width: 126px;
+    min-height: 104px;
+    padding: 14px 12px 12px;
   }
 
   .party-hat,

@@ -285,7 +285,6 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   const [micLevel, setMicLevel] = useState(0);
   const [muted, setMuted] = useState(false);
   const [musicState, setMusicState] = useState('idle');
-  const [openNoteIndex, setOpenNoteIndex] = useState(null);
   const detectorRef = useRef(null);
   const audioRef = useRef(null);
   const letterPositions = [
@@ -352,8 +351,8 @@ function CelebrantExperience({ greeting, onCreateNew }) {
         {!giftOpen && (
           <>
             <div className="gift-cue" aria-hidden="true">
-              <span className="curly-arrow">↝</span>
               <span>open it</span>
+              <span className="curly-arrow">↝</span>
             </div>
             <button type="button" className="gift-box" onClick={openGift} aria-label="Open birthday gift">
               <span className="gift-lid" />
@@ -420,15 +419,12 @@ function CelebrantExperience({ greeting, onCreateNew }) {
 
       {candleBlown && (
         <section className="floating-letters" aria-label="Birthday wish notes">
-          {greeting.birthdate && <span className="birthdate-tag">{formatBirthdate(greeting.birthdate)}</span>}
           {greeting.notes.length ? (
             <div className="letter-cloud">
               {greeting.notes.map((note, index) => (
-                <button
-                  type="button"
+                <article
                   className="letter-envelope"
                   key={`${note}-${index}`}
-                  onClick={() => setOpenNoteIndex(index)}
                   style={{
                     '--letter-index': index,
                     '--letter-left': letterPositions[index % letterPositions.length].left,
@@ -436,9 +432,8 @@ function CelebrantExperience({ greeting, onCreateNew }) {
                     '--letter-rotate': letterPositions[index % letterPositions.length].rotate,
                   }}
                 >
-                  <span className="envelope-flap" />
-                  <span className="envelope-body">Note {index + 1}</span>
-                </button>
+                  <p>{note}</p>
+                </article>
               ))}
             </div>
           ) : (
@@ -450,23 +445,6 @@ function CelebrantExperience({ greeting, onCreateNew }) {
         </section>
       )}
 
-      {openNoteIndex !== null && (
-        <div className="letter-backdrop" role="presentation" onClick={() => setOpenNoteIndex(null)}>
-          <article
-            className="open-letter"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Wish note ${openNoteIndex + 1}`}
-            onClick={(event) => event.stopPropagation()}
-          >
-            {greeting.birthdate && <span className="birthdate-tag">{formatBirthdate(greeting.birthdate)}</span>}
-            <p>{greeting.notes[openNoteIndex]}</p>
-            <button type="button" className="secondary-button" onClick={() => setOpenNoteIndex(null)}>
-              Close letter
-            </button>
-          </article>
-        </div>
-      )}
     </main>
   );
 }
