@@ -372,10 +372,11 @@ function CelebrantExperience({ greeting, onCreateNew }) {
                 '--flame-scale': 1 + micLevel * 0.65,
               }}
             >
+              <span className="candle-base" />
               <span className="wick" />
               {!candleBlown && <span className="flame" />}
             </div>
-            <div className="frosting" />
+            <div className="cake-top" />
             <div className="cake-body">
               <div className="cake-decorations" aria-hidden="true">
                 <i />
