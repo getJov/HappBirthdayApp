@@ -157,8 +157,8 @@ function Creator({ theme, onThemeChange }) {
       <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
       <div className="creator-shell">
         <section className="creator-hero" aria-labelledby="creator-title">
-          <p className="eyebrow">Birthday surprise maker</p>
-          <h1 id="creator-title">Create a birthday surprise</h1>
+          <p className="eyebrow">Birthday Greetings</p>
+          <h1 id="creator-title">Create a birthday greeting</h1>
           <p>Personalize the cake, add a few wishes, then send the birthday link.</p>
         </section>
 
@@ -263,7 +263,7 @@ function Creator({ theme, onThemeChange }) {
             </div>
 
             <h2>Share link</h2>
-            <p className="muted">Copy the link when your birthday surprise is ready.</p>
+            <p className="muted">Copy the link when your birthday greeting is ready.</p>
 
             <div className="url-meter">
               <span>Link size</span>
