@@ -4,7 +4,7 @@
 The current birthday app has accumulated multiple cartoon-room directions and no longer matches the requested simple flat sticker style. This redesign resets the visual language while preserving the existing shareable birthday greeting behavior.
 
 ## What
-Redesign the creator and celebrant experiences into a consistent flat sticker-style birthday app: flat colors, no gradients, white sticker borders, small shadows, a single global one-color watermark background, redesigned sticker-like gift/cake/card/balloons/banner/notes, and preserved sharing, mic, tap, audio, and confetti behavior.
+Redesign the creator and celebrant experiences into a consistent sticker-style birthday app: mostly flat colors, controlled premium cake/candle gradients, white sticker borders, small shadows, a single global one-color watermark background, redesigned sticker-like gift/cake/card/balloons/banner/notes, and preserved sharing, mic, tap, audio, and confetti behavior.
 
 ## Context
 
@@ -29,7 +29,7 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 ## Constraints
 
 **Must:**
-- Use a flat sticker visual style: flat colors, no gradients, white sticker borders, small offset shadows, bold simple shapes.
+- Use a sticker visual style: mostly flat colors, white sticker borders, small offset shadows, bold simple shapes, and controlled soft gradients only where Rev 4 explicitly permits them.
 - Apply the sticker treatment specifically to the balloons, cake, gift, folded card, and sticky notes: each should read as a flat object with a visible white outer border and a small shadow.
 - Use the same simple background on every page: one solid background color with diagonal birthday hat and gift outline drawings as a watermark pattern.
 - Preserve URL hash sharing, validation limits, local draft behavior, mic blow detection, tap-anywhere fallback, audio behavior, mute behavior, and static Vercel compatibility.
@@ -55,18 +55,34 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 - Rev 2 refinement must make the card open like a book from the closed folded state, then settle into one whole readable rectangular card page, not remain as a split-panel book view.
 - Rev 2 open-card layout must show birthdate at the top right, the birthday message centered, and the from label at the bottom right.
 - Rev 2 open-card birthday message must use a cursive/script-like font treatment while staying readable.
+- Rev 4 mobile polish must fix mobile layout weirdness without changing the share-link contract.
+- Rev 4 blowing-page wish note must sit above the cake in an upward semicircle/arc, visually wrapping around the cake area, with no filled background panel.
+- Rev 4 mobile balloons must remain perfect circles, not stretch into ovals.
+- Rev 4 banting letters must remain visible and not be covered by the string or other decoration.
+- Rev 4 card must sit on the cake plate at the lower-right side of the cake.
+- Rev 4 closed card must look like a folded letter/folder with a second folded page slightly visible behind it.
+- Rev 4 open card must still become one whole readable page card.
+- Rev 4 sticky notes must look more clearly like sticky notes, with paper-like shape/details while preserving drag behavior.
+- Rev 4 must add a visible theme toggle with two themes: pink default/current and blue alternate.
+- Rev 4 theme toggle must affect page colors, creator preview background direction, and cake colors without changing URL hash payload data.
+- Rev 4 cake must become a premium sticker-style birthday cake illustration: two-tier, thick white die-cut outline, soft layered depth, rounded friendly shapes, pastel cream layers, vibrant frosting, glossy frosting drips, decorative cherries, sprinkles, whipped cream accents, single centered candle, and slightly tilted perspective.
+- Rev 4 cake may use controlled smooth gradients and soft highlights for cake layers, frosting, candle body, flame, and shadows only.
+- Rev 4 candle must have a blue-to-purple body treatment and warm animated flame with small glow.
+- Rev 4 blow interaction must make the flame bend/shrink with mic/tap progress where feasible, show a small smoke puff after extinguishing, keep/trigger the existing confetti after extinguishing, and make the cake do a tiny celebratory bounce after blow-out.
 
 **Must not:**
 - Do not change `src/lib/shareData.js` payload format or validation rules unless a defect is found.
 - Do not change microphone detection thresholds or audio asset behavior unless required by the redesign.
 - Do not introduce new dependencies for physics, drag, icons, or animation.
-- Do not add gradients.
+- Do not add gradients to page backgrounds, watermark backgrounds, normal UI panels, balloons, sticky notes, gift, or ordinary controls.
+- Do not use harsh gradients; permitted gradients must be controlled soft gradients limited to the Rev 4 premium cake/candle/flame/frosting/shadow treatment.
 - Do not keep old dark-room, glow-heavy, or multi-candle visual assumptions.
 - Do not apply physics behavior to balloons, cake, gift, card, sticky notes, confetti, or the whole scene.
 - Do not vary the background pattern between creator, gift, blowing, and blown pages.
 - Do not mix unrelated refactors into the redesign.
 - Do not remove contrast from the blowing-page wish note while removing its filled background.
 - Do not add extra candles or change the birthday data contract while redesigning the cake/card.
+- Do not persist theme choice inside generated greeting URLs unless a later spec explicitly changes the share contract.
 
 **Out of scope:**
 - Backend storage, accounts, analytics, routing, deployment changes, and new audio generation.
@@ -84,11 +100,16 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 - Visual reset can accidentally break app behavior. -> **Mitigation:** limit implementation to `src/App.jsx`, `src/styles.css`, and only touch `ConfettiCanvas.jsx` if confetti colors need alignment; preserve helper files.
 - Rev 2 card and cake changes can overlap on mobile if the card moves onto the plate area. -> **Mitigation:** keep the closed card compact, make the open card scale responsively, and verify mobile layout after opening.
 - Rev 2 cake redesign can regress the one-candle/two-layer contract. -> **Mitigation:** keep explicit Done criteria for exactly one candle and two cake layers.
+- Rev 4 theme toggle can accidentally become part of the share-data contract. -> **Mitigation:** keep theme as local UI state/class only unless explicitly revised later; do not alter `src/lib/shareData.js`.
+- Rev 4 premium gradients conflict with the original flat/no-gradient rule. -> **Mitigation:** explicitly allow controlled soft gradients only on cake/candle/flame/frosting/shadow details and keep all page backgrounds/UI panels non-gradient.
+- Rev 4 mobile fixes can regress desktop composition. -> **Mitigation:** isolate mobile-specific sizing/positioning in media queries and verify both desktop and mobile.
+- Rev 4 blow interaction can overcomplicate microphone behavior. -> **Mitigation:** use existing `micLevel`, `candleBlown`, and tap progress state for visual response only; do not alter detection thresholds.
 
 **Pushback:**
 - A physics dependency does not belong in this app for banner hover. Future-us will hate maintaining an engine for decorative bunting. Use lightweight physics-like motion on the hanging letters/flags only unless the product explicitly requires true simulation.
 - Do not turn this into another decorative pile-up. The hierarchy is one focal point per phase: gift, then cake/candle, then cake/card with celebration elements supporting it.
 - Removing the blowing-note background cannot mean sacrificing readability. Use a curved text treatment with a white sticker stroke or strong shadow instead of invisible text on the watermark.
+- The cake can be premium without becoming photorealistic. Avoid stock/clipart noise; build the richer look from controlled CSS shapes, soft highlights, and sticker layering.
 
 ## Tasks
 
@@ -117,9 +138,14 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 **Files:** `src/App.jsx`, `src/styles.css`
 **Verify:** `npm run build`; Manual: gift is larger/centered, wish note is curved with no filled panel, cake is visually dominant and still one candle/two layers, balloon count is increased, banner letters visibly hang from the string, card starts closed on the plate area, and open card layout is readable on desktop and mobile.
 
+### T6: Rev 4 Mobile And Premium Cake Refinements
+**Do:** Fix mobile layout weirdness; make the blowing note an upward semicircle above the cake without a filled background; keep mobile balloons circular; make banting letters visible and string alignment clear; move the closed card to the lower-right cake plate area; redesign closed card as a folded letter/folder with a slight second page visible; keep open card as one whole readable page; make notes read as sticky notes; add a pink/blue theme toggle that changes page theme, preview background direction, and cake colors without changing share-data payload; redesign the cake as a premium sticker-style two-tier cake with controlled soft gradients, cream layers, vibrant frosting, glossy drips, cherries, sprinkles, cream swirls, one centered blue-to-purple candle, warm reactive flame, smoke puff after blow-out, and a tiny cake bounce.
+**Files:** `src/App.jsx`, `src/styles.css`
+**Verify:** `npm run build`; Manual: mobile gift/blowing/blown layouts do not look weird, wish note arcs upward above cake, mobile balloons stay circular, banting letters are readable, card sits lower-right on plate and opens correctly, notes look like sticky notes, pink/blue toggle changes app and cake colors, cake remains one candle/two layers and premium sticker-like, flame bends/shrinks before blow-out, smoke appears after blow-out, cake bounces lightly, and confetti still appears.
+
 ## Done
 - [ ] `npm run build` passes.
-- [ ] No gradients remain in the visible UI.
+- [ ] No gradients remain in page backgrounds, watermark backgrounds, normal UI panels, balloons, sticky notes, gift, or ordinary controls; controlled soft gradients are allowed only for the Rev 4 cake/candle/flame/frosting/shadow treatment.
 - [ ] All pages use one consistent flat background with diagonal birthday hat/gift watermark outlines.
 - [ ] Balloons, cake, gift, folded card, and sticky notes all have visible white sticker borders and small shadows.
 - [ ] Gift page uses simple red/yellow sticker gift and opens from clicking anywhere on the page.
@@ -131,6 +157,14 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 - [ ] Rev 2 blown page has more balloons without blocking the cake, card, controls, banner, or notes.
 - [ ] Rev 2 banner string aligns with the hanging banting letters/flags.
 - [ ] Rev 2 card starts closed on/near the cake plate area, opens with a book-like animation, then settles into one whole readable rectangular card with birthdate top right, cursive centered message, and from label bottom right.
+- [ ] Rev 4 mobile layouts no longer look weird across gift, blowing, and blown pages.
+- [ ] Rev 4 blowing note sits above the cake in an upward semicircle/arc with no filled background panel.
+- [ ] Rev 4 balloons remain circular on mobile.
+- [ ] Rev 4 banting letters are visible and not covered by the string.
+- [ ] Rev 4 card sits on the lower-right cake plate area, closed state looks like a folded letter/folder with a second page slightly visible, and open state is one whole readable page.
+- [ ] Rev 4 notes look like sticky notes and remain draggable.
+- [ ] Rev 4 pink/blue theme toggle changes app colors, preview background direction, and cake colors without changing share-link payload.
+- [ ] Rev 4 cake looks premium sticker-style with two tiers, one centered candle, controlled soft gradients, frosting drips, cherries, sprinkles, cream swirls, sticker outline, soft depth, reactive flame, smoke puff after blow-out, tiny bounce after blow-out, and existing confetti.
 - [ ] Existing share-link, validation, local draft, mic blow, tap fallback, audio, mute, and new-greeting behavior still work.
 - [ ] Mobile and desktop layouts have no incoherent overlaps.
 
@@ -156,3 +190,10 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 **Reason:** Rev 2 needed to preserve the desired book-like opening motion without leaving the final open state as a split-panel book.
 
 **Updated Done criteria:** T5 and Done now require a closed folded card, book-like opening animation, and final one-page readable card layout.
+
+### Rev 4 — June 1, 2026
+**Change:** Added mobile polish, corrected blowing-note arc direction/placement, mobile circular balloons, visible banting letters, lower-right plate card placement with folded-letter closed state, stronger sticky-note treatment, pink/blue theme toggle, and premium sticker cake direction with controlled gradients and richer blow-out interaction.
+
+**Reason:** The T5 result needs mobile correction and stronger cake/card polish. The cake is now explicitly the premium visual highlight, and the earlier no-gradient rule needs a narrow exception for cake/candle/flame quality.
+
+**Updated Done criteria:** Added Rev 4 checks for mobile layout, upward arced note, circular balloons, visible banting letters, folded plate card, sticky-note polish, theme toggle, premium cake details, reactive flame, smoke puff, bounce, and preserved confetti/share behavior.

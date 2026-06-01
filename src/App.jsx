@@ -35,10 +35,16 @@ const NOTE_LAYOUT = [
   { left: '76%', top: '34%', rotate: '-3deg' },
   { left: '42%', top: '74%', rotate: '2deg' },
 ];
+const THEME_KEY = 'happy-birthday-theme';
 
 export default function App() {
   const [sharedGreeting, setSharedGreeting] = useState(() => readGreetingFromHash());
   const [creatorKey, setCreatorKey] = useState(0);
+  const [theme, setTheme] = useState(() => loadTheme());
+
+  useEffect(() => {
+    saveTheme(theme);
+  }, [theme]);
 
   useEffect(() => {
     const handleHashChange = () => setSharedGreeting(readGreetingFromHash());
@@ -50,6 +56,8 @@ export default function App() {
     return (
       <CelebrantExperience
         greeting={sharedGreeting}
+        theme={theme}
+        onThemeChange={setTheme}
         onCreateNew={() => {
           clearDraft();
           window.history.pushState(null, '', window.location.pathname);
@@ -60,10 +68,10 @@ export default function App() {
     );
   }
 
-  return <Creator key={creatorKey} />;
+  return <Creator key={creatorKey} theme={theme} onThemeChange={setTheme} />;
 }
 
-function Creator() {
+function Creator({ theme, onThemeChange }) {
   const [form, setForm] = useState(() => loadDraft());
   const [shareUrl, setShareUrl] = useState('');
   const [copyState, setCopyState] = useState('idle');
@@ -146,7 +154,8 @@ function Creator() {
   const previewUrlLength = shareUrl || validateGreeting(form).url;
 
   return (
-    <main className="creator-page">
+    <main className={`creator-page theme-${theme}`}>
+      <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
       <div className="creator-shell">
         <section className="creator-hero" aria-labelledby="creator-title">
           <p className="eyebrow">Birthday surprise maker</p>
@@ -306,7 +315,7 @@ function Field({ label, help, children }) {
   );
 }
 
-function CelebrantExperience({ greeting, onCreateNew }) {
+function CelebrantExperience({ greeting, theme, onThemeChange, onCreateNew }) {
   const [giftOpen, setGiftOpen] = useState(false);
   const [candleBlown, setCandleBlown] = useState(false);
   const [countdown, setCountdown] = useState(null);
@@ -448,11 +457,12 @@ function CelebrantExperience({ greeting, onCreateNew }) {
 
   return (
     <main
-      className={`celebrant-page ${giftOpen ? 'gift-is-open' : ''} ${candleBlown ? 'candle-is-out' : ''}`}
+      className={`celebrant-page theme-${theme} ${giftOpen ? 'gift-is-open' : ''} ${candleBlown ? 'candle-is-out' : ''}`}
       onPointerDown={handleSceneTap}
     >
       <ConfettiCanvas active={candleBlown} />
       <audio ref={audioRef} src="/audio/happy-birthday.wav" loop preload="auto" />
+      <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
 
       {candleBlown && (
         <>
@@ -536,6 +546,10 @@ function CelebrantExperience({ greeting, onCreateNew }) {
                     className="candle"
                     style={{
                       '--blow-level': micLevel,
+                      '--flame-x': `${-10 * micLevel}px`,
+                      '--flame-scale': Math.max(0.58, 1 - 0.35 * micLevel),
+                      '--flame-tilt': `${-18 * micLevel}deg`,
+                      '--flame-glow': `${9 + 13 * micLevel}px`,
                     }}
                   >
                     {!candleBlown && <i className="flame" />}
@@ -546,10 +560,17 @@ function CelebrantExperience({ greeting, onCreateNew }) {
                 <span className="sprinkle sprinkle-three" />
                 <span className="sprinkle sprinkle-four" />
                 <span className="sprinkle sprinkle-five" />
+                <span className="cream-swirl swirl-one" />
+                <span className="cream-swirl swirl-two" />
+                <span className="cream-swirl swirl-three" />
+                <span className="cherry cherry-one" />
+                <span className="cherry cherry-two" />
+                <span className="cake-highlight" />
               </div>
               <span className="icing-drip drip-four" />
               <span className="icing-drip drip-five" />
             </div>
+            {candleBlown && <span className="smoke-puff" aria-hidden="true" />}
             {candleBlown && (
               <button
                 type="button"
@@ -615,6 +636,7 @@ function CelebrantExperience({ greeting, onCreateNew }) {
 function CurvedWishMessage() {
   const message = 'Make a wish, and blow the candle!';
   const midpoint = (message.length - 1) / 2;
+  const maxDistance = midpoint || 1;
 
   return (
     <p className="wish-message" aria-label={message}>
@@ -624,13 +646,37 @@ function CurvedWishMessage() {
           key={`${character}-${index}`}
           style={{
             '--curve-index': index - midpoint,
-            '--curve-lift': `${Math.abs(index - midpoint) * -0.55}px`,
+            '--curve-lift': `${-18 + (Math.abs(index - midpoint) / maxDistance) * 28}px`,
+            '--curve-rotate': `${(index - midpoint) * 1.25}deg`,
           }}
         >
           {character === ' ' ? '\u00a0' : character}
         </span>
       ))}
     </p>
+  );
+}
+
+function ThemeToggle({ theme, onThemeChange }) {
+  return (
+    <div className="theme-toggle" aria-label="Theme">
+      <button
+        type="button"
+        className={theme === 'pink' ? 'is-active' : ''}
+        onClick={() => onThemeChange('pink')}
+        aria-pressed={theme === 'pink'}
+      >
+        Pink
+      </button>
+      <button
+        type="button"
+        className={theme === 'blue' ? 'is-active' : ''}
+        onClick={() => onThemeChange('blue')}
+        aria-pressed={theme === 'blue'}
+      >
+        Blue
+      </button>
+    </div>
   );
 }
 
@@ -676,6 +722,23 @@ function formatBirthdate(value) {
     day: 'numeric',
     year: 'numeric',
   });
+}
+
+function loadTheme() {
+  try {
+    const storedTheme = localStorage.getItem(THEME_KEY);
+    return storedTheme === 'blue' ? 'blue' : 'pink';
+  } catch {
+    return 'pink';
+  }
+}
+
+function saveTheme(theme) {
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch {
+    // Theme storage is local UI preference only.
+  }
 }
 
 async function playBirthdayAudio(audioRef, muted, setMusicState) {
