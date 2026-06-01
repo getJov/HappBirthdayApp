@@ -586,7 +586,7 @@ function CelebrantExperience({ greeting, onCreateNew, theme }) {
                 <span className="card-inside">
                   {birthdateLabel && <small className="card-date">{birthdateLabel}</small>}
                   <strong className="card-message">
-                    Happy {greeting.age} Birthday {greeting.name}!
+                    Happy {ordinalAge(greeting.age)} Birthday {greeting.name}!
                   </strong>
                   <small className="card-from">-{greeting.from}</small>
                 </span>
