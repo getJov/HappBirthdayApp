@@ -16,7 +16,6 @@ import {
 const TAP_BLOW_TARGET = 5;
 const TAP_BLOW_WINDOW_MS = 850;
 const TAP_PROGRESS_RESET_MS = 1100;
-const CARTOON_CANDLE_COUNT = 3;
 
 export default function App() {
   const [sharedGreeting, setSharedGreeting] = useState(() => readGreetingFromHash());
@@ -302,7 +301,6 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   const lastTapRef = useRef(0);
   const tapCountRef = useRef(0);
   const tapResetTimerRef = useRef(null);
-  const candles = Array.from({ length: CARTOON_CANDLE_COUNT }, (_, index) => index);
 
   useEffect(() => {
     return () => {
@@ -371,6 +369,10 @@ function CelebrantExperience({ greeting, onCreateNew }) {
 
   const handleSceneTap = (event) => {
     if (event.target.closest('button, input, textarea, a, .sticky-note')) return;
+    if (!giftOpen) {
+      openGift();
+      return;
+    }
     handleTapFallback();
   };
 
@@ -418,6 +420,9 @@ function CelebrantExperience({ greeting, onCreateNew }) {
         )}
 
         <div className="cake-scene" aria-hidden={!giftOpen}>
+          {giftOpen && !candleBlown && (
+            <p className="wish-message">Make a wish, and blow the candle!</p>
+          )}
           <div className="cake">
             <div className="cake-plate" />
             <div className="cake-layer bottom-layer">
@@ -428,24 +433,20 @@ function CelebrantExperience({ greeting, onCreateNew }) {
             <div className="cake-layer top-layer">
               <div className="cake-top">
                 <div className="candle-field" aria-hidden="true">
-                  {candles.map((candle) => (
-                    <span
-                      className="candle"
-                      key={candle}
-                      style={{
-                        '--candle-index': candle,
-                        '--blow-level': micLevel,
-                      }}
-                    >
-                      {!candleBlown && <i className="flame" />}
-                    </span>
-                  ))}
+                  <span
+                    className="candle"
+                    style={{
+                      '--blow-level': micLevel,
+                    }}
+                  >
+                    {!candleBlown && <i className="flame" />}
+                  </span>
                 </div>
                 <span className="sprinkle sprinkle-one" />
                 <span className="sprinkle sprinkle-two" />
                 <span className="sprinkle sprinkle-three" />
-                <span className="sparkle sparkle-one" />
-                <span className="sparkle sparkle-two" />
+                <span className="sprinkle sprinkle-four" />
+                <span className="sprinkle sprinkle-five" />
               </div>
               <span className="icing-drip drip-four" />
               <span className="icing-drip drip-five" />
