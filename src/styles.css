@@ -486,19 +486,19 @@ p {
 .gift-box {
   position: absolute;
   left: 50%;
-  bottom: clamp(88px, 14vh, 132px);
+  top: 47%;
   width: clamp(232px, 38vw, 332px);
   height: clamp(196px, 33vw, 272px);
   background: transparent;
   border: 0;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   transform-origin: center bottom;
   transition: opacity 320ms ease, transform 520ms ease;
   z-index: 5;
 }
 
 .gift-box:hover {
-  transform: translateX(-50%) translateY(-5px) rotate(-1deg);
+  transform: translate(-50%, calc(-50% - 5px)) rotate(-1deg);
 }
 
 .gift-base,
@@ -587,7 +587,7 @@ p {
 .gift-is-open .gift-box {
   pointer-events: none;
   opacity: 0;
-  transform: translateX(-50%) translateY(46px) scale(0.94);
+  transform: translate(-50%, calc(-50% + 46px)) scale(0.94);
   transition-delay: 340ms;
 }
 
@@ -618,7 +618,7 @@ p {
 
 .wish-message {
   position: absolute;
-  top: clamp(4px, 1.5vh, 18px);
+  top: clamp(-36px, -3vh, -14px);
   left: 50%;
   z-index: 9;
   display: flex;
@@ -1065,13 +1065,14 @@ p {
 .bunting::before {
   content: "";
   position: absolute;
-  top: 0;
+  top: -2px;
   left: 2%;
   right: 2%;
-  height: 44px;
+  height: 34px;
   border-bottom: 5px solid var(--outline);
   border-radius: 0 0 50% 50%;
   z-index: 0;
+  pointer-events: none;
 }
 
 .bunting-letter {
@@ -1100,7 +1101,7 @@ p {
   top: calc(-1 * var(--hang));
   left: 50%;
   width: 4px;
-  height: calc(var(--hang) + 18px);
+  height: calc(var(--hang) - 1px);
   background: rgba(38, 48, 68, 0.72);
   transform: translateX(-50%);
   z-index: -1;
@@ -1229,9 +1230,11 @@ p {
 }
 
 .birthday-card.is-open {
-  width: clamp(260px, 42vw, 430px);
-  min-height: clamp(166px, 25vw, 244px);
-  transform: translate(-22%, -12px) rotate(1deg);
+  left: 70%;
+  bottom: clamp(26px, 5vw, 48px);
+  width: clamp(248px, 30vw, 360px);
+  min-height: clamp(152px, 19vw, 208px);
+  transform: translateX(-4%) rotate(1deg);
 }
 
 .birthday-card.is-open::before {
@@ -1430,17 +1433,19 @@ p {
   }
 
   .birthday-card {
-    left: 62%;
-    bottom: 52px;
+    left: 66%;
+    bottom: 48px;
     width: min(42vw, 164px);
     min-height: 100px;
     transform: rotate(-5deg);
   }
 
   .birthday-card.is-open {
-    width: min(86vw, 360px);
-    min-height: 196px;
-    transform: translate(-38%, -12px) rotate(1deg);
+    left: 50%;
+    bottom: -150px;
+    width: min(86vw, 336px);
+    min-height: 154px;
+    transform: translateX(-50%) rotate(1deg);
   }
 
   .balloon-bar {
@@ -1460,8 +1465,8 @@ p {
   }
 
   .bunting::before {
-    top: -2px;
-    height: 38px;
+    top: -4px;
+    height: 28px;
   }
 
   .sticky-note {
@@ -1540,7 +1545,7 @@ p {
   }
 
   .gift-box {
-    bottom: 104px;
+    top: 44%;
     width: 242px;
     height: 206px;
   }
@@ -1564,7 +1569,7 @@ p {
   }
 
   .wish-message {
-    top: 78px;
+    top: 8px;
     min-height: 80px;
     font-size: 0.92rem;
   }
@@ -1596,6 +1601,7 @@ p {
 
   .bunting-letter::before {
     width: 3px;
+    height: calc(var(--hang) - 2px);
   }
 
   .card-message {
@@ -1632,7 +1638,7 @@ p {
   }
 
   .gift-box:hover {
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
   }
 
   .candle-is-out .cake,

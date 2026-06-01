@@ -69,6 +69,13 @@ Redesign the creator and celebrant experiences into a consistent sticker-style b
 - Rev 4 cake may use controlled smooth gradients and soft highlights for cake layers, frosting, candle body, flame, and shadows only.
 - Rev 4 candle must have a blue-to-purple body treatment and warm animated flame with small glow.
 - Rev 4 blow interaction must make the flame bend/shrink with mic/tap progress where feasible, show a small smoke puff after extinguishing, keep/trigger the existing confetti after extinguishing, and make the cake do a tiny celebratory bounce after blow-out.
+- Rev 5/T7 must show the theme toggle only on the main creator/input page, not on gift, blowing, or blown pages.
+- Rev 5/T7 must keep the selected local theme applied to all pages even though the toggle control only appears on the creator page.
+- Rev 5/T7 must move the gift to the visual center of the screen and slightly higher.
+- Rev 5/T7 must move the blowing-page wish arc higher, above the candle, especially on mobile.
+- Rev 5/T7 must make small-screen banting letters readable by ensuring the string/line never covers the letter faces.
+- Rev 5/T7 must keep the open card readable, inside the viewport, and positioned so it does not cover the cake.
+- Rev 5/T7 must allow sticky notes to drag anywhere on the screen, constrained only by viewport edges rather than the current tight movement limit.
 
 **Must not:**
 - Do not change `src/lib/shareData.js` payload format or validation rules unless a defect is found.
@@ -83,6 +90,8 @@ Redesign the creator and celebrant experiences into a consistent sticker-style b
 - Do not remove contrast from the blowing-page wish note while removing its filled background.
 - Do not add extra candles or change the birthday data contract while redesigning the cake/card.
 - Do not persist theme choice inside generated greeting URLs unless a later spec explicitly changes the share contract.
+- Do not show the theme toggle on shared celebrant/gift/blowing/blown pages.
+- Do not solve card overlap by hiding the cake or moving the card off-screen.
 
 **Out of scope:**
 - Backend storage, accounts, analytics, routing, deployment changes, and new audio generation.
@@ -104,6 +113,9 @@ Redesign the creator and celebrant experiences into a consistent sticker-style b
 - Rev 4 premium gradients conflict with the original flat/no-gradient rule. -> **Mitigation:** explicitly allow controlled soft gradients only on cake/candle/flame/frosting/shadow details and keep all page backgrounds/UI panels non-gradient.
 - Rev 4 mobile fixes can regress desktop composition. -> **Mitigation:** isolate mobile-specific sizing/positioning in media queries and verify both desktop and mobile.
 - Rev 4 blow interaction can overcomplicate microphone behavior. -> **Mitigation:** use existing `micLevel`, `candleBlown`, and tap progress state for visual response only; do not alter detection thresholds.
+- Rev 5 moving the theme toggle to creator-only can be confused with removing theme support from shared pages. -> **Mitigation:** keep theme state/class application global/local, but render the toggle control only inside `Creator`.
+- Rev 5 unconstrained note dragging can make notes hard to recover if dragged off-screen. -> **Mitigation:** constrain to viewport bounds with enough room to move anywhere visible, not to a small central box.
+- Rev 5 open-card repositioning can regress desktop if only mobile is considered. -> **Mitigation:** tune desktop and mobile card positions separately.
 
 **Pushback:**
 - A physics dependency does not belong in this app for banner hover. Future-us will hate maintaining an engine for decorative bunting. Use lightweight physics-like motion on the hanging letters/flags only unless the product explicitly requires true simulation.
@@ -143,6 +155,11 @@ Redesign the creator and celebrant experiences into a consistent sticker-style b
 **Files:** `src/App.jsx`, `src/styles.css`
 **Verify:** `npm run build`; Manual: mobile gift/blowing/blown layouts do not look weird, wish note arcs upward above cake, mobile balloons stay circular, banting letters are readable, card sits lower-right on plate and opens correctly, notes look like sticky notes, pink/blue toggle changes app and cake colors, cake remains one candle/two layers and premium sticker-like, flame bends/shrinks before blow-out, smoke appears after blow-out, cake bounces lightly, and confetti still appears.
 
+### T7: Rev 5 Layout Corrections
+**Do:** Render the theme toggle only on the main creator/input page while keeping selected local theme applied globally; center the gift and move it slightly higher; move the wish arc higher above the candle, especially on mobile; fix small-screen banting readability so the string does not cover letters; reposition/resize the open card so it stays inside the viewport and does not cover the cake; expand sticky-note dragging so notes can move anywhere visible on the screen.
+**Files:** `src/App.jsx`, `src/styles.css`
+**Verify:** `npm run build`; Manual: theme toggle appears only on creator page, theme still applies on celebrant pages, gift is centered/higher, wish arc sits above candle on desktop/mobile, banting letters are readable on small screens, open card does not cover cake or overflow right edge, and sticky notes drag across the visible viewport.
+
 ## Done
 - [ ] `npm run build` passes.
 - [ ] No gradients remain in page backgrounds, watermark backgrounds, normal UI panels, balloons, sticky notes, gift, or ordinary controls; controlled soft gradients are allowed only for the Rev 4 cake/candle/flame/frosting/shadow treatment.
@@ -165,6 +182,12 @@ Redesign the creator and celebrant experiences into a consistent sticker-style b
 - [ ] Rev 4 notes look like sticky notes and remain draggable.
 - [ ] Rev 4 pink/blue theme toggle changes app colors, preview background direction, and cake colors without changing share-link payload.
 - [ ] Rev 4 cake looks premium sticker-style with two tiers, one centered candle, controlled soft gradients, frosting drips, cherries, sprinkles, cream swirls, sticker outline, soft depth, reactive flame, smoke puff after blow-out, tiny bounce after blow-out, and existing confetti.
+- [ ] Rev 5 theme toggle appears only on the creator/input page while the selected local theme still applies across pages.
+- [ ] Rev 5 gift is centered and slightly higher on the gift page.
+- [ ] Rev 5 wish arc sits higher above the candle on desktop and mobile.
+- [ ] Rev 5 banting letters are readable on small screens and not crossed by the string.
+- [ ] Rev 5 open card stays inside the viewport, remains readable, and does not cover the cake.
+- [ ] Rev 5 sticky notes can be dragged anywhere within the visible viewport.
 - [ ] Existing share-link, validation, local draft, mic blow, tap fallback, audio, mute, and new-greeting behavior still work.
 - [ ] Mobile and desktop layouts have no incoherent overlaps.
 
@@ -197,3 +220,10 @@ Redesign the creator and celebrant experiences into a consistent sticker-style b
 **Reason:** The T5 result needs mobile correction and stronger cake/card polish. The cake is now explicitly the premium visual highlight, and the earlier no-gradient rule needs a narrow exception for cake/candle/flame quality.
 
 **Updated Done criteria:** Added Rev 4 checks for mobile layout, upward arced note, circular balloons, visible banting letters, folded plate card, sticky-note polish, theme toggle, premium cake details, reactive flame, smoke puff, bounce, and preserved confetti/share behavior.
+
+### Rev 5 — June 1, 2026
+**Change:** Added layout corrections for creator-only theme toggle, higher centered gift, higher wish arc above the candle, readable small-screen banting, safe open-card placement, and broader sticky-note dragging.
+
+**Reason:** Post-T6 review showed remaining mobile/layout issues: the theme toggle appeared on shared pages, the gift and wish arc were too low, banting string still obscured letters on small screens, open card could cover the cake or overflow, and note dragging was too constrained.
+
+**Updated Done criteria:** Added Rev 5 checks for creator-only theme toggle, centered/higher gift, higher wish arc, readable banting, safe open-card position, and viewport-wide note dragging.

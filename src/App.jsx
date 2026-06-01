@@ -57,7 +57,6 @@ export default function App() {
       <CelebrantExperience
         greeting={sharedGreeting}
         theme={theme}
-        onThemeChange={setTheme}
         onCreateNew={() => {
           clearDraft();
           window.history.pushState(null, '', window.location.pathname);
@@ -315,7 +314,7 @@ function Field({ label, help, children }) {
   );
 }
 
-function CelebrantExperience({ greeting, theme, onThemeChange, onCreateNew }) {
+function CelebrantExperience({ greeting, onCreateNew, theme }) {
   const [giftOpen, setGiftOpen] = useState(false);
   const [candleBlown, setCandleBlown] = useState(false);
   const [countdown, setCountdown] = useState(null);
@@ -428,23 +427,26 @@ function CelebrantExperience({ greeting, theme, onThemeChange, onCreateNew }) {
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
     const current = noteOffsets[index] || { x: 0, y: 0 };
+    const rect = event.currentTarget.getBoundingClientRect();
     dragRef.current = {
       index,
       startX: event.clientX,
       startY: event.clientY,
       baseX: current.x,
       baseY: current.y,
+      minX: current.x - rect.left,
+      maxX: current.x + window.innerWidth - rect.right,
+      minY: current.y - rect.top,
+      maxY: current.y + window.innerHeight - rect.bottom,
     };
     setDraggingNote(index);
   };
 
   const moveNote = (event) => {
     if (!dragRef.current) return;
-    const { index, startX, startY, baseX, baseY } = dragRef.current;
-    const maxX = Math.max(80, window.innerWidth * 0.32);
-    const maxY = Math.max(80, window.innerHeight * 0.28);
-    const x = clamp(baseX + event.clientX - startX, -maxX, maxX);
-    const y = clamp(baseY + event.clientY - startY, -maxY, maxY);
+    const { index, startX, startY, baseX, baseY, minX, maxX, minY, maxY } = dragRef.current;
+    const x = clamp(baseX + event.clientX - startX, minX, maxX);
+    const y = clamp(baseY + event.clientY - startY, minY, maxY);
     setNoteOffsets((current) => ({ ...current, [index]: { x, y } }));
   };
 
@@ -462,7 +464,6 @@ function CelebrantExperience({ greeting, theme, onThemeChange, onCreateNew }) {
     >
       <ConfettiCanvas active={candleBlown} />
       <audio ref={audioRef} src="/audio/happy-birthday.wav" loop preload="auto" />
-      <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
 
       {candleBlown && (
         <>
