@@ -550,6 +550,10 @@ p {
   transform: translateY(0) scale(1);
 }
 
+.candle-is-out .cake-scene {
+  pointer-events: auto;
+}
+
 .wish-message {
   position: absolute;
   top: clamp(18px, 4vh, 36px);
@@ -1098,6 +1102,33 @@ p {
     width: min(38vw, 156px);
     min-height: 92px;
     padding: 11px;
+  }
+
+  .sticky-note:nth-child(1) {
+    left: 3% !important;
+    top: 60% !important;
+  }
+
+  .sticky-note:nth-child(2) {
+    left: auto !important;
+    right: 3%;
+    top: 60% !important;
+  }
+
+  .sticky-note:nth-child(3) {
+    left: 3% !important;
+    top: 36% !important;
+  }
+
+  .sticky-note:nth-child(4) {
+    left: auto !important;
+    right: 3%;
+    top: 36% !important;
+  }
+
+  .sticky-note:nth-child(5) {
+    left: 29% !important;
+    top: 78% !important;
   }
 }
 
