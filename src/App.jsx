@@ -25,6 +25,7 @@ const BALLOON_COLORS = [
   '#b99cff',
   '#ff9d4d',
 ];
+const BALLOON_COUNT = 24;
 const BUNTING_TEXT = 'HAPPY BIRTHDAY';
 const NOTE_COLORS = ['#fff1a8', '#9ee6ff', '#ffb7d5', '#bdf3a7', '#d8c5ff'];
 const NOTE_LAYOUT = [
@@ -443,6 +444,8 @@ function CelebrantExperience({ greeting, onCreateNew }) {
     setDraggingNote(null);
   };
 
+  const birthdateLabel = formatBirthdate(greeting.birthdate);
+
   return (
     <main
       className={`celebrant-page ${giftOpen ? 'gift-is-open' : ''} ${candleBlown ? 'candle-is-out' : ''}`}
@@ -463,7 +466,7 @@ function CelebrantExperience({ greeting, onCreateNew }) {
           </div>
           <section className="celebration-scene" aria-label="Birthday celebration decorations">
             <div className="balloon-bar" aria-label="Pop the balloons">
-              {Array.from({ length: 18 }, (_, index) => (
+              {Array.from({ length: BALLOON_COUNT }, (_, index) => (
                 <button
                   type="button"
                   className={`balloon-button ${poppedBalloons[index] ? 'is-popped' : ''}`}
@@ -472,7 +475,7 @@ function CelebrantExperience({ greeting, onCreateNew }) {
                   aria-label={`Pop balloon ${index + 1}`}
                   style={{
                     '--balloon-color': BALLOON_COLORS[index % BALLOON_COLORS.length],
-                    '--balloon-y': `${(index % 4) * 9}px`,
+                    '--balloon-y': `${(index % 5) * 8}px`,
                     '--balloon-rotate': `${-8 + (index % 5) * 4}deg`,
                   }}
                 />
@@ -517,7 +520,7 @@ function CelebrantExperience({ greeting, onCreateNew }) {
 
         <div className="cake-scene" aria-hidden={!giftOpen}>
           {giftOpen && !candleBlown && (
-            <p className="wish-message">Make a wish, and blow the candle!</p>
+            <CurvedWishMessage />
           )}
           <div className="cake">
             <div className="cake-plate" />
@@ -555,9 +558,15 @@ function CelebrantExperience({ greeting, onCreateNew }) {
                 aria-expanded={cardOpen}
                 aria-label="Open birthday card"
               >
-                <span className="card-cover">Open</span>
+                <span className="card-cover">
+                  <span>Open</span>
+                </span>
                 <span className="card-inside">
-                  Happy {greeting.age} Birthday {greeting.name}! -{greeting.from}
+                  {birthdateLabel && <small className="card-date">{birthdateLabel}</small>}
+                  <strong className="card-message">
+                    Happy {greeting.age} Birthday {greeting.name}!
+                  </strong>
+                  <small className="card-from">-{greeting.from}</small>
                 </span>
               </button>
             )}
@@ -603,6 +612,28 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   );
 }
 
+function CurvedWishMessage() {
+  const message = 'Make a wish, and blow the candle!';
+  const midpoint = (message.length - 1) / 2;
+
+  return (
+    <p className="wish-message" aria-label={message}>
+      {message.split('').map((character, index) => (
+        <span
+          aria-hidden="true"
+          key={`${character}-${index}`}
+          style={{
+            '--curve-index': index - midpoint,
+            '--curve-lift': `${Math.abs(index - midpoint) * -0.55}px`,
+          }}
+        >
+          {character === ' ' ? '\u00a0' : character}
+        </span>
+      ))}
+    </p>
+  );
+}
+
 function PlusIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -632,6 +663,19 @@ function MutedIcon() {
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
+}
+
+function formatBirthdate(value) {
+  if (!value) return '';
+
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return date.toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }
 
 async function playBirthdayAudio(audioRef, muted, setMusicState) {

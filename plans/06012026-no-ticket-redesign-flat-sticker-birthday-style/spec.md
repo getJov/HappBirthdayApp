@@ -37,8 +37,8 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 - Redesign the gift as a simple red/yellow flat sticker gift.
 - Redesign the blowing page with one candle only, a two-layer cake, yellowish cake bases, pink icing/topping, blue and yellow sprinkles, and a white plate.
 - Show the floating message: `Make a wish, and blow the candle!`
-- Redesign the blown page with the cake centered and a folded card beside it.
-- Make the card open like a book on click and reveal: `Happy [age] Birthday [celebrant name]! -[from]`.
+- Redesign the blown page with the cake centered and a folded card placed on or near the cake plate area.
+- Make the card start closed, open with a book-like animation on click, then settle into one whole rectangular readable card page that reveals the birthday message.
 - Add a full-width top balloon/circle bar with overlapping clickable circles that pop and regenerate later.
 - Add hanging `Happy Birthday` banner/bunting below the balloons. The real/physics-like motion applies only to the individual hanging banting letters or flags attached to the string.
 - Show up to 5 notes as draggable sticky-note flat stickers in different colors.
@@ -46,6 +46,15 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 - Put the two post-blow controls at the top right as icon-only buttons.
 - Respect `prefers-reduced-motion` by reducing nonessential animation and hover motion.
 - Keep mobile layouts readable with no overlapping card, cake, controls, balloons, banner, or notes.
+- Rev 2 refinement must make the gift slightly larger and keep it visually centered on the gift page.
+- Rev 2 refinement must change the blowing-page wish note so it reads as curved/arched text or a curved sticker treatment without a filled background panel; readability must still be preserved with stroke, outline, or shadow.
+- Rev 2 refinement must make the cake the primary visual highlight of the app. The cake may change colors at implementation discretion, but it must remain flat, sticker-like, two-layered, and exactly one candle.
+- Rev 2 refinement must add more balloons to the blown page without blocking controls, the cake, card, or sticky notes.
+- Rev 2 refinement must align the banner string with the individual hanging banting letters/flags so each flag visibly hangs from the string.
+- Rev 2 refinement must place the birthday card on or near the cake plate area and keep it closed first.
+- Rev 2 refinement must make the card open like a book from the closed folded state, then settle into one whole readable rectangular card page, not remain as a split-panel book view.
+- Rev 2 open-card layout must show birthdate at the top right, the birthday message centered, and the from label at the bottom right.
+- Rev 2 open-card birthday message must use a cursive/script-like font treatment while staying readable.
 
 **Must not:**
 - Do not change `src/lib/shareData.js` payload format or validation rules unless a defect is found.
@@ -56,6 +65,8 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 - Do not apply physics behavior to balloons, cake, gift, card, sticky notes, confetti, or the whole scene.
 - Do not vary the background pattern between creator, gift, blowing, and blown pages.
 - Do not mix unrelated refactors into the redesign.
+- Do not remove contrast from the blowing-page wish note while removing its filled background.
+- Do not add extra candles or change the birthday data contract while redesigning the cake/card.
 
 **Out of scope:**
 - Backend storage, accounts, analytics, routing, deployment changes, and new audio generation.
@@ -71,10 +82,13 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 - Draggable sticky notes can interfere with tap-anywhere blow behavior and mobile scrolling. -> **Mitigation:** enable note dragging only in post-blow state, ignore controls/card targets in scene tap handling, and keep drag constraints within the viewport.
 - Full-width balloons, bunting, card, cake, confetti, and notes can clutter small screens. -> **Mitigation:** define responsive z-index/layering rules, reduce balloon/note density on mobile, and verify mobile screenshots manually.
 - Visual reset can accidentally break app behavior. -> **Mitigation:** limit implementation to `src/App.jsx`, `src/styles.css`, and only touch `ConfettiCanvas.jsx` if confetti colors need alignment; preserve helper files.
+- Rev 2 card and cake changes can overlap on mobile if the card moves onto the plate area. -> **Mitigation:** keep the closed card compact, make the open card scale responsively, and verify mobile layout after opening.
+- Rev 2 cake redesign can regress the one-candle/two-layer contract. -> **Mitigation:** keep explicit Done criteria for exactly one candle and two cake layers.
 
 **Pushback:**
 - A physics dependency does not belong in this app for banner hover. Future-us will hate maintaining an engine for decorative bunting. Use lightweight physics-like motion on the hanging letters/flags only unless the product explicitly requires true simulation.
 - Do not turn this into another decorative pile-up. The hierarchy is one focal point per phase: gift, then cake/candle, then cake/card with celebration elements supporting it.
+- Removing the blowing-note background cannot mean sacrificing readability. Use a curved text treatment with a white sticker stroke or strong shadow instead of invisible text on the watermark.
 
 ## Tasks
 
@@ -98,6 +112,11 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 **Files:** `src/App.jsx`, `src/styles.css`
 **Verify:** `npm run build`; Manual: test creator form, generated link reload, gift open, candle blow/tap fallback, blown celebration, card open, balloon pop, note drag, mute, and new greeting on desktop and mobile widths.
 
+### T5: Rev 2 Visual Refinements
+**Do:** Make the gift larger and centered; redesign the wish/blow note as curved readable text without a filled background; redesign the cake as the main flat sticker highlight with exactly one candle and two layers; add more post-blow balloons; align the banner string to the hanging banting letters/flags; move the birthday card onto/near the cake plate area; keep the card closed first; make the card open with a book-like animation, then settle into one whole readable rectangular card with birthdate top right, cursive centered message, and from label bottom right.
+**Files:** `src/App.jsx`, `src/styles.css`
+**Verify:** `npm run build`; Manual: gift is larger/centered, wish note is curved with no filled panel, cake is visually dominant and still one candle/two layers, balloon count is increased, banner letters visibly hang from the string, card starts closed on the plate area, and open card layout is readable on desktop and mobile.
+
 ## Done
 - [ ] `npm run build` passes.
 - [ ] No gradients remain in the visible UI.
@@ -106,6 +125,12 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 - [ ] Gift page uses simple red/yellow sticker gift and opens from clicking anywhere on the page.
 - [ ] Blowing page shows one-candle two-layer sticker cake, white plate, pink icing, blue/yellow sprinkles, and the exact wish/blow message.
 - [ ] Blown page shows centered cake, clickable folded card with dynamic birthday message, clickable regenerating balloon bar, physics-like motion only on hanging banting letters/flags, draggable five-note sticker design, falling confetti, and icon-only top-right controls.
+- [ ] Rev 2 gift is slightly larger and centered.
+- [ ] Rev 2 blowing-page wish note is curved/readable and has no filled background panel.
+- [ ] Rev 2 cake is the main visual highlight, flat sticker-like, exactly one candle, and exactly two layers.
+- [ ] Rev 2 blown page has more balloons without blocking the cake, card, controls, banner, or notes.
+- [ ] Rev 2 banner string aligns with the hanging banting letters/flags.
+- [ ] Rev 2 card starts closed on/near the cake plate area, opens with a book-like animation, then settles into one whole readable rectangular card with birthdate top right, cursive centered message, and from label bottom right.
 - [ ] Existing share-link, validation, local draft, mic blow, tap fallback, audio, mute, and new-greeting behavior still work.
 - [ ] Mobile and desktop layouts have no incoherent overlaps.
 
@@ -117,3 +142,17 @@ Redesign the creator and celebrant experiences into a consistent flat sticker-st
 **Reason:** The original spec captured the general direction but left room for inconsistent sticker treatment, per-page background drift, and over-broad physics behavior.
 
 **Updated Done criteria:** Added explicit sticker-border verification and narrowed the blown-page banner criterion to physics-like motion only on hanging banting letters/flags.
+
+### Rev 2 — June 1, 2026
+**Change:** Added refinement scope for a larger centered gift, curved no-panel blowing note, more balloons, better aligned banting string, redesigned plate-area card, readable whole-card open state, card birthdate/message/from layout, cursive message treatment, and a stronger cake redesign.
+
+**Reason:** The first implementation established the flat sticker direction, but the cake/card/banner/gift details need more visual hierarchy and clearer layout. The cake should be the app highlight.
+
+**Updated Done criteria:** Added explicit Rev 2 checks for gift centering/scale, curved note treatment, cake prominence and one-candle/two-layer contract, increased balloon count, banner string alignment, and readable card layout.
+
+### Rev 3 — June 1, 2026
+**Change:** Clarified the card interaction: the card starts closed like a folded card/book, opens with a book-like animation, then settles into one whole rectangular readable card page.
+
+**Reason:** Rev 2 needed to preserve the desired book-like opening motion without leaving the final open state as a split-panel book.
+
+**Updated Done criteria:** T5 and Done now require a closed folded card, book-like opening animation, and final one-page readable card layout.

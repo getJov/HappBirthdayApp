@@ -425,18 +425,20 @@ p {
 
 .gift-box {
   position: absolute;
-  bottom: clamp(92px, 15vh, 138px);
-  width: clamp(198px, 34vw, 294px);
-  height: clamp(170px, 30vw, 242px);
+  left: 50%;
+  bottom: clamp(88px, 14vh, 132px);
+  width: clamp(232px, 38vw, 332px);
+  height: clamp(196px, 33vw, 272px);
   background: transparent;
   border: 0;
+  transform: translateX(-50%);
   transform-origin: center bottom;
   transition: opacity 320ms ease, transform 520ms ease;
   z-index: 5;
 }
 
 .gift-box:hover {
-  transform: translateY(-5px) rotate(-1deg);
+  transform: translateX(-50%) translateY(-5px) rotate(-1deg);
 }
 
 .gift-base,
@@ -493,8 +495,8 @@ p {
 .gift-bow {
   left: 50%;
   top: 4%;
-  width: 124px;
-  height: 82px;
+  width: 142px;
+  height: 90px;
   transform: translateX(-50%);
   z-index: 4;
 }
@@ -504,8 +506,8 @@ p {
   content: "";
   position: absolute;
   top: 10px;
-  width: 58px;
-  height: 48px;
+  width: 66px;
+  height: 54px;
   border: 7px solid var(--sticker-border);
   border-radius: 50% 50% 44% 50%;
   background: var(--yellow);
@@ -525,7 +527,7 @@ p {
 .gift-is-open .gift-box {
   pointer-events: none;
   opacity: 0;
-  transform: translateY(46px) scale(0.94);
+  transform: translateX(-50%) translateY(46px) scale(0.94);
   transition-delay: 340ms;
 }
 
@@ -556,93 +558,106 @@ p {
 
 .wish-message {
   position: absolute;
-  top: clamp(18px, 4vh, 36px);
+  top: clamp(6px, 2vh, 20px);
   left: 50%;
   z-index: 9;
-  width: max-content;
-  max-width: min(88vw, 520px);
-  border: 6px solid var(--sticker-border);
-  border-radius: 999px;
-  padding: 12px 18px;
+  display: flex;
+  justify-content: center;
+  width: min(92vw, 640px);
+  min-height: 68px;
   color: var(--ink);
-  background: #fff1a8;
-  box-shadow: var(--shadow-small);
-  font-weight: 950;
+  font-size: clamp(1.05rem, 3.8vw, 2rem);
+  font-weight: 1000;
+  letter-spacing: 0;
   text-align: center;
-  transform: translateX(-50%) rotate(-1deg);
+  text-shadow:
+    3px 0 0 var(--sticker-border),
+    -3px 0 0 var(--sticker-border),
+    0 3px 0 var(--sticker-border),
+    0 -3px 0 var(--sticker-border),
+    3px 4px 0 rgba(38, 48, 68, 0.16);
+  transform: translateX(-50%);
+}
+
+.wish-message span {
+  display: inline-block;
+  transform: translateY(var(--curve-lift)) rotate(calc(var(--curve-index) * 0.95deg));
+  transform-origin: 50% 140%;
 }
 
 .cake {
   position: relative;
-  width: clamp(310px, 62vw, 520px);
-  height: clamp(320px, 50vw, 430px);
+  width: clamp(350px, 68vw, 620px);
+  height: clamp(360px, 55vw, 500px);
+  filter: drop-shadow(10px 13px 0 rgba(38, 48, 68, 0.12));
 }
 
 .cake-plate {
   position: absolute;
-  left: 7%;
-  right: 7%;
-  bottom: 7%;
-  height: 74px;
-  border: 8px solid var(--sticker-border);
+  left: 4%;
+  right: 4%;
+  bottom: 5%;
+  height: clamp(74px, 12vw, 96px);
+  border: 9px solid var(--sticker-border);
   border-radius: 50%;
-  background: var(--white);
-  box-shadow: var(--shadow);
+  background: #fffdf5;
+  box-shadow: 0 7px 0 #ddeefd, var(--shadow);
 }
 
 .cake-layer {
   position: absolute;
   left: 50%;
-  border: 8px solid var(--sticker-border);
-  border-radius: 28px 28px 22px 22px;
-  background: var(--cake);
-  box-shadow: var(--shadow-small);
+  border: 9px solid var(--sticker-border);
+  border-radius: 34px 34px 26px 26px;
+  background: #f8c979;
+  box-shadow: var(--shadow);
 }
 
 .bottom-layer {
-  bottom: 20%;
-  width: 78%;
-  height: 138px;
+  bottom: 19%;
+  width: 82%;
+  height: clamp(142px, 24vw, 176px);
   transform: translateX(-50%);
 }
 
 .top-layer {
-  bottom: 45%;
-  width: 54%;
-  height: 112px;
+  bottom: 46%;
+  width: 58%;
+  height: clamp(116px, 19vw, 146px);
   transform: translateX(-50%);
 }
 
 .cake-layer::before {
   content: "";
   position: absolute;
-  left: -8px;
-  right: -8px;
-  top: -28px;
-  height: 58px;
-  border: 8px solid var(--sticker-border);
+  left: -9px;
+  right: -9px;
+  top: -34px;
+  height: clamp(62px, 10vw, 78px);
+  border: 9px solid var(--sticker-border);
   border-radius: 50%;
-  background: var(--pink);
+  background: #ff7cab;
+  box-shadow: 0 5px 0 #eb5f96;
 }
 
 .cake-top {
   position: absolute;
   left: 0;
   right: 0;
-  top: -32px;
-  height: 70px;
+  top: -38px;
+  height: 86px;
   border-radius: 50%;
 }
 
 .icing-drip {
   position: absolute;
-  top: 12px;
-  width: 25px;
-  height: 40px;
-  border: 6px solid var(--sticker-border);
+  top: 10px;
+  width: clamp(27px, 5vw, 36px);
+  height: 44px;
+  border: 7px solid var(--sticker-border);
   border-top: 0;
-  border-radius: 0 0 18px 18px;
-  background: var(--pink);
+  border-radius: 0 0 22px 22px;
+  background: #ff7cab;
   z-index: 2;
 }
 
@@ -674,7 +689,7 @@ p {
 .candle-field {
   position: absolute;
   left: 50%;
-  top: 18%;
+  top: 12%;
   display: grid;
   place-items: end center;
   transform: translate(-50%, -50%);
@@ -683,11 +698,11 @@ p {
 
 .candle {
   position: relative;
-  width: clamp(20px, 4.4vw, 30px);
-  height: clamp(70px, 12vw, 92px);
-  border: 6px solid var(--sticker-border);
+  width: clamp(22px, 4.5vw, 34px);
+  height: clamp(78px, 12vw, 104px);
+  border: 7px solid var(--sticker-border);
   border-radius: 12px;
-  background: var(--white);
+  background: #fff9e8;
   box-shadow: var(--shadow-small);
 }
 
@@ -708,9 +723,9 @@ p {
   bottom: -14px;
   width: 46px;
   height: 18px;
-  border: 6px solid var(--sticker-border);
+  border: 7px solid var(--sticker-border);
   border-radius: 50%;
-  background: var(--pink);
+  background: #57b7ff;
   transform: translateX(-50%);
 }
 
@@ -732,8 +747,8 @@ p {
 .sprinkle {
   position: absolute;
   z-index: 5;
-  width: 25px;
-  height: 8px;
+  width: 27px;
+  height: 9px;
   border: 3px solid var(--sticker-border);
   border-radius: 999px;
 }
@@ -816,15 +831,15 @@ p {
   z-index: 16;
   display: flex;
   justify-content: center;
-  min-height: clamp(74px, 12vw, 118px);
-  padding: 0 74px;
+  min-height: clamp(78px, 12vw, 122px);
+  padding: 0 70px 0 18px;
   pointer-events: auto;
 }
 
 .balloon-button {
-  width: clamp(42px, 7vw, 76px);
-  height: clamp(42px, 7vw, 76px);
-  margin-left: clamp(-15px, -1.6vw, -8px);
+  width: clamp(39px, 6.3vw, 72px);
+  height: clamp(39px, 6.3vw, 72px);
+  margin-left: clamp(-18px, -1.9vw, -9px);
   border: 6px solid var(--sticker-border);
   border-radius: 50%;
   background: var(--balloon-color);
@@ -845,7 +860,7 @@ p {
 
 .bunting {
   position: fixed;
-  top: clamp(72px, 11vw, 118px);
+  top: clamp(74px, 10.5vw, 114px);
   left: 50%;
   z-index: 15;
   display: flex;
@@ -853,7 +868,7 @@ p {
   justify-content: center;
   gap: clamp(3px, 0.8vw, 10px);
   width: min(92vw, 760px);
-  min-height: 98px;
+  min-height: 112px;
   pointer-events: auto;
   transform: translateX(-50%);
 }
@@ -861,11 +876,11 @@ p {
 .bunting::before {
   content: "";
   position: absolute;
-  top: 11px;
+  top: 0;
   left: 2%;
   right: 2%;
-  height: 34px;
-  border-bottom: 4px solid var(--outline);
+  height: 44px;
+  border-bottom: 5px solid var(--outline);
   border-radius: 0 0 50% 50%;
 }
 
@@ -891,10 +906,10 @@ p {
 .bunting-letter::before {
   content: "";
   position: absolute;
-  top: -16px;
+  top: calc(-1 * var(--hang));
   left: 50%;
   width: 4px;
-  height: 18px;
+  height: calc(var(--hang) + 18px);
   background: var(--outline);
   transform: translateX(-50%);
 }
@@ -906,57 +921,105 @@ p {
   box-shadow: none;
 }
 
+.bunting-letter.space::before {
+  display: none;
+}
+
 .bunting:hover .bunting-letter:not(.space) {
   transform: rotate(calc(var(--tilt) * -1)) translateY(7px);
 }
 
 .birthday-card {
   position: absolute;
-  right: clamp(-8px, 4vw, 38px);
-  bottom: clamp(88px, 19vh, 146px);
+  left: 50%;
+  bottom: clamp(38px, 8vw, 58px);
   z-index: 18;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  width: clamp(188px, 30vw, 292px);
-  min-height: clamp(128px, 19vw, 176px);
+  grid-template-columns: 1fr;
+  width: clamp(132px, 22vw, 188px);
+  min-height: clamp(88px, 13vw, 122px);
   border: 0;
   background: transparent;
-  perspective: 800px;
+  perspective: 900px;
   pointer-events: auto;
+  transform: translateX(-50%) rotate(-4deg);
+  transform-origin: 50% 100%;
+  transition: width 360ms ease, min-height 360ms ease, transform 360ms ease;
 }
 
 .card-cover,
 .card-inside {
   display: grid;
-  place-items: center;
   border: 6px solid var(--sticker-border);
   color: var(--ink);
   box-shadow: var(--shadow-small);
 }
 
 .card-cover {
-  border-radius: 14px 0 0 14px;
-  background: #fff1a8;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  place-items: center;
+  border-radius: 14px;
+  background: #ffed86;
   font-weight: 950;
-  transform-origin: 100% 50%;
-  transition: transform 440ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: 0 50%;
+  transition: transform 520ms cubic-bezier(0.18, 0.86, 0.22, 1), opacity 180ms ease 360ms;
+}
+
+.card-cover span {
+  transform: rotate(3deg);
 }
 
 .card-inside {
-  border-left: 0;
-  border-radius: 0 14px 14px 0;
-  padding: 12px;
-  background: var(--paper);
-  font-size: clamp(0.82rem, 1.8vw, 1rem);
+  position: relative;
+  align-content: stretch;
+  min-height: inherit;
+  border-radius: 14px;
+  padding: clamp(14px, 2.2vw, 22px);
+  background: #fffdf5;
   font-weight: 850;
   line-height: 1.25;
   text-align: center;
-  opacity: 0.22;
-  transition: opacity 240ms ease 160ms;
+  opacity: 0;
+  transition: opacity 240ms ease 240ms;
+}
+
+.card-date,
+.card-from {
+  color: var(--muted);
+  font-size: clamp(0.62rem, 1.4vw, 0.84rem);
+  font-weight: 900;
+}
+
+.card-date {
+  justify-self: end;
+  align-self: start;
+}
+
+.card-message {
+  align-self: center;
+  color: var(--red-dark);
+  font-family: "Brush Script MT", "Segoe Script", cursive;
+  font-size: clamp(1.15rem, 3.2vw, 2.05rem);
+  line-height: 1.04;
+  text-align: center;
+}
+
+.card-from {
+  justify-self: end;
+  align-self: end;
+}
+
+.birthday-card.is-open {
+  width: clamp(260px, 42vw, 430px);
+  min-height: clamp(166px, 25vw, 244px);
+  transform: translateX(-50%) translateY(-14px) rotate(1deg);
 }
 
 .birthday-card.is-open .card-cover {
-  transform: rotateY(-142deg);
+  opacity: 0;
+  transform: rotateY(-136deg);
 }
 
 .birthday-card.is-open .card-inside {
@@ -1083,10 +1146,17 @@ p {
   }
 
   .birthday-card {
-    right: 50%;
-    bottom: 36px;
-    width: min(82vw, 300px);
-    transform: translateX(50%);
+    left: 50%;
+    bottom: 34px;
+    width: min(42vw, 164px);
+    min-height: 100px;
+    transform: translateX(-50%) rotate(-4deg);
+  }
+
+  .birthday-card.is-open {
+    width: min(86vw, 360px);
+    min-height: 196px;
+    transform: translateX(-50%) translateY(-12px) rotate(1deg);
   }
 
   .balloon-bar {
@@ -1157,9 +1227,9 @@ p {
   }
 
   .gift-box {
-    bottom: 110px;
-    width: 212px;
-    height: 180px;
+    bottom: 104px;
+    width: 242px;
+    height: 206px;
   }
 
   .cake-scene {
@@ -1181,10 +1251,9 @@ p {
   }
 
   .wish-message {
-    top: 126px;
-    border-width: 5px;
-    padding: 10px 13px;
-    font-size: 0.92rem;
+    top: 116px;
+    min-height: 58px;
+    font-size: 1rem;
   }
 
   .top-actions {
@@ -1203,6 +1272,10 @@ p {
     height: 42px;
     border-width: 4px;
     font-size: 0.86rem;
+  }
+
+  .card-message {
+    font-size: 1.25rem;
   }
 
   .sticky-note {
@@ -1225,9 +1298,15 @@ p {
     transition-duration: 1ms !important;
   }
 
-  .bunting:hover .bunting-letter:not(.space),
-  .balloon-button:hover,
+  .bunting:hover .bunting-letter:not(.space) {
+    transform: rotate(var(--tilt));
+  }
+
+  .balloon-button:hover {
+    transform: translateY(var(--balloon-y)) rotate(var(--balloon-rotate));
+  }
+
   .gift-box:hover {
-    transform: none;
+    transform: translateX(-50%);
   }
 }
