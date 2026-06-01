@@ -16,6 +16,24 @@ import {
 const TAP_BLOW_TARGET = 5;
 const TAP_BLOW_WINDOW_MS = 850;
 const TAP_PROGRESS_RESET_MS = 1100;
+const BALLOON_COLORS = [
+  '#ff8fbd',
+  '#ffd84a',
+  '#57b7ff',
+  '#74d66f',
+  '#f04c4c',
+  '#b99cff',
+  '#ff9d4d',
+];
+const BUNTING_TEXT = 'HAPPY BIRTHDAY';
+const NOTE_COLORS = ['#fff1a8', '#9ee6ff', '#ffb7d5', '#bdf3a7', '#d8c5ff'];
+const NOTE_LAYOUT = [
+  { left: '6%', top: '62%', rotate: '-4deg' },
+  { left: '74%', top: '56%', rotate: '3deg' },
+  { left: '10%', top: '35%', rotate: '2deg' },
+  { left: '76%', top: '34%', rotate: '-3deg' },
+  { left: '42%', top: '74%', rotate: '2deg' },
+];
 
 export default function App() {
   const [sharedGreeting, setSharedGreeting] = useState(() => readGreetingFromHash());
@@ -296,16 +314,23 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   const [muted, setMuted] = useState(false);
   const [musicState, setMusicState] = useState('idle');
   const [tapProgress, setTapProgress] = useState(0);
+  const [cardOpen, setCardOpen] = useState(false);
+  const [poppedBalloons, setPoppedBalloons] = useState({});
+  const [noteOffsets, setNoteOffsets] = useState({});
+  const [draggingNote, setDraggingNote] = useState(null);
   const detectorRef = useRef(null);
   const audioRef = useRef(null);
   const lastTapRef = useRef(0);
   const tapCountRef = useRef(0);
   const tapResetTimerRef = useRef(null);
+  const balloonTimersRef = useRef({});
+  const dragRef = useRef(null);
 
   useEffect(() => {
     return () => {
       detectorRef.current?.stop();
       window.clearTimeout(tapResetTimerRef.current);
+      Object.values(balloonTimersRef.current).forEach((timer) => window.clearTimeout(timer));
     };
   }, []);
 
@@ -321,6 +346,7 @@ function CelebrantExperience({ greeting, onCreateNew }) {
     setMicLevel(0);
     setCountdown(null);
     setCandleBlown(true);
+    setCardOpen(false);
     playBirthdayAudio(audioRef, muted, setMusicState);
   };
 
@@ -368,12 +394,53 @@ function CelebrantExperience({ greeting, onCreateNew }) {
   };
 
   const handleSceneTap = (event) => {
-    if (event.target.closest('button, input, textarea, a, .sticky-note')) return;
+    if (event.target.closest('button, input, textarea, a, .sticky-note, .birthday-card, .bunting')) return;
     if (!giftOpen) {
       openGift();
       return;
     }
     handleTapFallback();
+  };
+
+  const popBalloon = (index) => {
+    setPoppedBalloons((current) => ({ ...current, [index]: true }));
+    window.clearTimeout(balloonTimersRef.current[index]);
+    balloonTimersRef.current[index] = window.setTimeout(() => {
+      setPoppedBalloons((current) => {
+        const next = { ...current };
+        delete next[index];
+        return next;
+      });
+    }, 1800);
+  };
+
+  const startNoteDrag = (event, index) => {
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    const current = noteOffsets[index] || { x: 0, y: 0 };
+    dragRef.current = {
+      index,
+      startX: event.clientX,
+      startY: event.clientY,
+      baseX: current.x,
+      baseY: current.y,
+    };
+    setDraggingNote(index);
+  };
+
+  const moveNote = (event) => {
+    if (!dragRef.current) return;
+    const { index, startX, startY, baseX, baseY } = dragRef.current;
+    const maxX = Math.max(80, window.innerWidth * 0.32);
+    const maxY = Math.max(80, window.innerHeight * 0.28);
+    const x = clamp(baseX + event.clientX - startX, -maxX, maxX);
+    const y = clamp(baseY + event.clientY - startY, -maxY, maxY);
+    setNoteOffsets((current) => ({ ...current, [index]: { x, y } }));
+  };
+
+  const endNoteDrag = () => {
+    dragRef.current = null;
+    setDraggingNote(null);
   };
 
   return (
@@ -388,17 +455,46 @@ function CelebrantExperience({ greeting, onCreateNew }) {
         <>
           <div className="top-actions" aria-label="Celebration controls">
             <button type="button" className="round-icon-button" onClick={onCreateNew} title="New greeting" aria-label="New greeting">
-              +
+              <PlusIcon />
             </button>
             <button type="button" className="round-icon-button" onClick={toggleMute} title={muted ? 'Unmute' : 'Mute'} aria-label={muted ? 'Unmute' : 'Mute'}>
-              {muted ? 'U' : 'M'}
+              {muted ? <MutedIcon /> : <VolumeIcon />}
             </button>
           </div>
-          <div className="celebration-balloons" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </div>
+          <section className="celebration-scene" aria-label="Birthday celebration decorations">
+            <div className="balloon-bar" aria-label="Pop the balloons">
+              {Array.from({ length: 18 }, (_, index) => (
+                <button
+                  type="button"
+                  className={`balloon-button ${poppedBalloons[index] ? 'is-popped' : ''}`}
+                  key={index}
+                  onClick={() => popBalloon(index)}
+                  aria-label={`Pop balloon ${index + 1}`}
+                  style={{
+                    '--balloon-color': BALLOON_COLORS[index % BALLOON_COLORS.length],
+                    '--balloon-y': `${(index % 4) * 9}px`,
+                    '--balloon-rotate': `${-8 + (index % 5) * 4}deg`,
+                  }}
+                />
+              ))}
+            </div>
+
+            <div className="bunting" aria-label="Happy Birthday banner">
+              {BUNTING_TEXT.split('').map((letter, index) => (
+                <span
+                  className={`bunting-letter ${letter === ' ' ? 'space' : ''}`}
+                  key={`${letter}-${index}`}
+                  style={{
+                    '--flag-color': BALLOON_COLORS[index % BALLOON_COLORS.length],
+                    '--hang': `${8 + (index % 5) * 5}px`,
+                    '--tilt': `${-6 + (index % 4) * 4}deg`,
+                  }}
+                >
+                  {letter}
+                </span>
+              ))}
+            </div>
+          </section>
         </>
       )}
 
@@ -452,11 +548,18 @@ function CelebrantExperience({ greeting, onCreateNew }) {
               <span className="icing-drip drip-five" />
             </div>
             {candleBlown && (
-              <div className="cake-card" aria-live="polite">
-                <span>Happy {ordinalAge(greeting.age)} Birthday</span>
-                <strong>{greeting.name}</strong>
-                <small>- {greeting.from}</small>
-              </div>
+              <button
+                type="button"
+                className={`birthday-card ${cardOpen ? 'is-open' : ''}`}
+                onClick={() => setCardOpen((open) => !open)}
+                aria-expanded={cardOpen}
+                aria-label="Open birthday card"
+              >
+                <span className="card-cover">Open</span>
+                <span className="card-inside">
+                  Happy {greeting.age} Birthday {greeting.name}! -{greeting.from}
+                </span>
+              </button>
             )}
           </div>
         </div>
@@ -468,8 +571,20 @@ function CelebrantExperience({ greeting, onCreateNew }) {
             <div className="sticky-note-grid">
               {greeting.notes.map((note, index) => (
                 <article
-                  className={`sticky-note sticky-${index + 1}`}
+                  className={`sticky-note ${draggingNote === index ? 'is-dragging' : ''}`}
                   key={`${note}-${index}`}
+                  onPointerDown={(event) => startNoteDrag(event, index)}
+                  onPointerMove={moveNote}
+                  onPointerUp={endNoteDrag}
+                  onPointerCancel={endNoteDrag}
+                  style={{
+                    '--note-left': NOTE_LAYOUT[index % NOTE_LAYOUT.length].left,
+                    '--note-top': NOTE_LAYOUT[index % NOTE_LAYOUT.length].top,
+                    '--note-rotate': NOTE_LAYOUT[index % NOTE_LAYOUT.length].rotate,
+                    '--note-color': NOTE_COLORS[index % NOTE_COLORS.length],
+                    '--drag-x': `${noteOffsets[index]?.x || 0}px`,
+                    '--drag-y': `${noteOffsets[index]?.y || 0}px`,
+                  }}
                 >
                   <p>{note}</p>
                 </article>
@@ -486,6 +601,37 @@ function CelebrantExperience({ greeting, onCreateNew }) {
 
     </main>
   );
+}
+
+function PlusIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
+function VolumeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 10v4h4l6 5V5l-6 5H4z" />
+      <path d="M17 9c1.4 1.6 1.4 4.4 0 6" />
+      <path d="M19.5 6.5c3 3.2 3 7.8 0 11" />
+    </svg>
+  );
+}
+
+function MutedIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 10v4h4l6 5V5l-6 5H4z" />
+      <path d="M18 9l4 6M22 9l-4 6" />
+    </svg>
+  );
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }
 
 async function playBirthdayAudio(audioRef, muted, setMusicState) {
